@@ -20,3 +20,6 @@ editor.refresh()
 // unregister() to register() below. Note this comes with some pitfalls.
 // Learn more about service workers: https://bit.ly/CRA-PWA
 serviceWorker.unregister();
+
+//TODO: Need to create on mode
+//TODO: Need to see if its possible to create a new settings page which allows for creating a mode interactively - STRETCH
