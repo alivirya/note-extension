@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "Notetaker",
+  "name": "Notetaker application with a code editor interface",
   "icons": [
     {
       "src": "favicon.ico",
