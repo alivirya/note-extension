@@ -1,8 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import 'codemirror/lib/codemirror.css'
-import 'codemirror/theme/pastel-on-dark.css'
-import "codemirror/mode/markdown/markdown.js"
+import 'codemirror/theme/monokai.css'
+import 'codemirror/mode/go/go'
+import 'codemirror/mode/javascript/javascript'
+import 'codemirror/mode/markdown/markdown'
+import "./todoLang"
 import './index.css';
 import App from './App';
 import CodeMirror from 'codemirror'
@@ -11,8 +14,8 @@ ReactDOM.render( <App /> , document.getElementById('root'));
 let editor = CodeMirror.fromTextArea(document.getElementById('editor'), {
     lineNumbers: true,
     indentUnit: 4,
-    theme: "pastel-on-dark",
-    mode: "markdown"
+    theme: "monokai",
+    mode: "todoLang"
 })
 editor.refresh()
 
