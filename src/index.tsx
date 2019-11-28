@@ -8,8 +8,8 @@ import "./todo"
 import "./index.css";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
-const React = require("react");
-const CodeMirror = require("codemirror");
+import React from "react";
+import CodeMirror from "codemirror"
 
 ReactDOM.render(<App />, document.getElementById("root"));
 let editor = CodeMirror.fromTextArea(document.getElementById("editor"), {

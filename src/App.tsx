@@ -1,6 +1,6 @@
 import "./App.css";
 import "typeface-roboto-mono"
-const React = require("react");
+import React from 'react';
 
 const App: React.FC = () => {
   return (
