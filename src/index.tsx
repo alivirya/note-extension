@@ -1,18 +1,20 @@
-import ReactDOM from "react-dom";
 import "codemirror/lib/codemirror.css"
-import "codemirror/theme/monokai.css"
+import "./monokai.css"
 import "codemirror/mode/go/go"
 import "codemirror/mode/javascript/javascript"
 import "codemirror/mode/markdown/markdown"
 import "./todo"
 import "./index.css";
-import App from "./App";
+
 import * as serviceWorker from "./serviceWorker";
-import React from "react";
+
+import App from "./App";
 import CodeMirror from "codemirror"
+import React from "react";
+import ReactDOM from "react-dom";
 
 ReactDOM.render(<App />, document.getElementById("root"));
-let editor = CodeMirror.fromTextArea(document.getElementById("editor"), {
+let editor = CodeMirror.fromTextArea(document.getElementById("editor")! as HTMLTextAreaElement, {
     lineNumbers: true,
     indentUnit: 4,
     theme: "monokai",

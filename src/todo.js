@@ -17,12 +17,25 @@ CodeMirror.defineMode("todo", function(config, parserConfig) {
       "january": true,
       "february": true,
       "march": true,
-      "april": true
+      "april": true,
+      "may": true,
+      "june": true,
+      "july": true,
+      "august": true,
+      "september": true,
+      "october": true,
+      "november": true,
+      "december": true
   };
 
   var atoms = {
       "make": true,
       "new": true,
+      "todo": true,
+      "pay": true,
+      "water": true,
+      "power": true,
+      "rent": true,
   };
 
   var indentUnit = 4;
@@ -30,20 +43,19 @@ CodeMirror.defineMode("todo", function(config, parserConfig) {
 
   var curPunc;
 
+// Stream is an object that contains the each word
   function tokenBase(stream, state) {
       var ch = stream.next();
       // It looks like ch is checking the beginning of a word.
-      console.log(ch);
-      if (ch == '"' || ch == "'" || ch == "`") {
+      if (ch === '"' || ch === "'" || ch === "`") {
           state.tokenize = tokenString(ch);
           return state.tokenize(stream, state);
       }
       // if is a number
       if (/[\d\.]/.test(ch)) {
-          if (ch == ".") {
-              //TODO: Test what this match does? 
+          if (ch === ".") {
               stream.match(/^[0-9]+([eE][\-+]?[0-9]+)?/);
-          } else if (ch == "0") {
+          } else if (ch === "0") {
               stream.match(/^[xX][0-9a-fA-F]+/) || stream.match(/^0[0-7]+/);
           } else {
               stream.match(/^[0-9]*\.?[0-9]*([eE][\-+]?[0-9]+)?/);
@@ -54,7 +66,7 @@ CodeMirror.defineMode("todo", function(config, parserConfig) {
           curPunc = ch;
           return null;
       }
-      if (ch == "/") {
+      if (ch === "/") {
           if (stream.eat("*")) {
               state.tokenize = tokenComment;
               return tokenComment(stream, state);
@@ -71,7 +83,7 @@ CodeMirror.defineMode("todo", function(config, parserConfig) {
       stream.eatWhile(/[\w\$_\xa1-\uffff]/);
       var cur = stream.current();
       if (keywords.propertyIsEnumerable(cur)) {
-          if (cur == "case" || cur == "default") curPunc = "case";
+          if (cur === "case" || cur === "default") curPunc = "case";
           return "keyword";
       }
       if (atoms.propertyIsEnumerable(cur)) return "atom";
@@ -83,13 +95,13 @@ CodeMirror.defineMode("todo", function(config, parserConfig) {
           var escaped = false,
               next, end = false;
           while ((next = stream.next()) != null) {
-              if (next == quote && !escaped) {
+              if (next === quote && !escaped) {
                   end = true;
                   break;
               }
-              escaped = !escaped && quote != "`" && next == "\\";
+              escaped = !escaped && quote !== "`" && next === "\\";
           }
-          if (end || !(escaped || quote == "`"))
+          if (end || !(escaped || quote === "`"))
               state.tokenize = tokenBase;
           return "string";
       };
@@ -99,11 +111,11 @@ CodeMirror.defineMode("todo", function(config, parserConfig) {
       var maybeEnd = false,
           ch;
       while (ch = stream.next()) {
-          if (ch == "/" && maybeEnd) {
+          if (ch === "/" && maybeEnd) {
               state.tokenize = tokenBase;
               break;
           }
-          maybeEnd = (ch == "*");
+          maybeEnd = (ch === "*");
       }
       return "comment";
   }
@@ -123,7 +135,7 @@ CodeMirror.defineMode("todo", function(config, parserConfig) {
   function popContext(state) {
       if (!state.context.prev) return;
       var t = state.context.type;
-      if (t == ")" || t == "]" || t == "}")
+      if (t === ")" || t === "]" || t === "}")
           state.indented = state.context.indented;
       return state.context = state.context.prev;
   }
@@ -143,36 +155,31 @@ CodeMirror.defineMode("todo", function(config, parserConfig) {
       token: function (stream, state) {
           var ctx = state.context;
           if (stream.sol()) {
-              if (ctx.align == null) ctx.align = false;
+              if (ctx.align === null) ctx.align = false;
               state.indented = stream.indentation();
               state.startOfLine = true;
-              if (ctx.type == "case") ctx.type = "}";
+              if (ctx.type === "case") ctx.type = "}";
           }
           if (stream.eatSpace()) return null;
           curPunc = null;
           var style = (state.tokenize || tokenBase)(stream, state);
-          if (style == "comment") return style;
+          if (style === "comment") return style;
           if (ctx.align == null) ctx.align = true;
 
-          if (curPunc == "{") pushContext(state, stream.column(), "}");
-          else if (curPunc == "[") pushContext(state, stream.column(), "]");
-          else if (curPunc == "(") pushContext(state, stream.column(), ")");
-          else if (curPunc == "case") ctx.type = "case";
-          else if (curPunc == "}" && ctx.type == "}") popContext(state);
-          else if (curPunc == ctx.type) popContext(state);
+          if (curPunc === "{") pushContext(state, stream.column(), "}");
+          else if (curPunc === "[") pushContext(state, stream.column(), "]");
+          else if (curPunc === "(") pushContext(state, stream.column(), ")");
+          else if (curPunc === "}" && ctx.type == "}") popContext(state);
+          else if (curPunc === ctx.type) popContext(state);
           state.startOfLine = false;
           return style;
       },
 
       indent: function (state, textAfter) {
-          if (state.tokenize != tokenBase && state.tokenize != null) return CodeMirror.Pass;
+          if (state.tokenize !== tokenBase && state.tokenize !== null) return CodeMirror.Pass;
           var ctx = state.context,
               firstChar = textAfter && textAfter.charAt(0);
-          if (ctx.type == "case" && /^(?:case|default)\b/.test(textAfter)) {
-              state.context.type = "}";
-              return ctx.indented;
-          }
-          var closing = firstChar == ctx.type;
+          var closing = firstChar === ctx.type;
           if (ctx.align) return ctx.column + (closing ? 0 : 1);
           else return ctx.indented + (closing ? 0 : indentUnit);
       },
