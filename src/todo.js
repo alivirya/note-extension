@@ -1,83 +1,38 @@
 import CodeMirror from 'codemirror'
-CodeMirror.defineMode("todolang", function(config, parserConfig) {
-  var indentUnit = 4;
+CodeMirror.defineMode("todo", function(config, parserConfig) {
 
   var keywords = {
-      "break": true,
-      "case": true,
-      "chan": true,
-      "const": true,
-      "continue": true,
-      "default": true,
-      "defer": true,
-      "else": true,
-      "fallthrough": true,
-      "for": true,
-      "func": true,
-      "go": true,
-      "goto": true,
-      "if": true,
-      "import": true,
-      "interface": true,
-      "map": true,
-      "package": true,
-      "range": true,
-      "return": true,
-      "select": true,
-      "struct": true,
-      "switch": true,
-      "type": true,
-      "var": true,
-      "bool": true,
-      "byte": true,
-      "complex64": true,
-      "complex128": true,
-      "float32": true,
-      "float64": true,
-      "int8": true,
-      "int16": true,
-      "int32": true,
-      "int64": true,
-      "string": true,
-      "uint8": true,
-      "uint16": true,
-      "uint32": true,
-      "uint64": true,
-      "int": true,
-      "uint": true,
-      "uintptr": true,
-      "error": true,
-      "rune": true
+      "month": true,
+      "week": true,
+      "weekly": true,
+      "day": true,
+      "daily": true,
+      "monday": true,
+      "tuesday": true,
+      "wednesday": true,
+      "thursday": true,
+      "friday": true,
+      "saturday": true,
+      "sunday": true,
+      "january": true,
+      "february": true,
+      "march": true,
+      "april": true
   };
 
   var atoms = {
-      "true": true,
-      "false": true,
-      "iota": true,
-      "nil": true,
-      "append": true,
-      "cap": true,
-      "close": true,
-      "complex": true,
-      "copy": true,
-      "delete": true,
-      "imag": true,
-      "len": true,
       "make": true,
       "new": true,
-      "panic": true,
-      "print": true,
-      "println": true,
-      "real": true,
-      "recover": true
   };
 
+  var indentUnit = 4;
   var isOperatorChar = /[+\-*&^%:=<>!|\/]/;
 
   var curPunc;
 
   function tokenBase(stream, state) {
       var ch = stream.next();
+      // It looks like ch is checking the beginning of a word.
       console.log(ch);
       if (ch == '"' || ch == "'" || ch == "`") {
           state.tokenize = tokenString(ch);
