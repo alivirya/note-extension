@@ -39,18 +39,13 @@ CodeMirror.defineMode("todo", function(config, parserConfig) {
   };
 
   var indentUnit = 4;
-  var isOperatorChar = /[+\-*&^%:=<>!|\/]/;
+  var isOperatorChar = /[+\-&^%:=<>!|\/]/;
 
   var curPunc;
 
 // Stream is an object that contains the each word
   function tokenBase(stream, state) {
       var ch = stream.next();
-      // It looks like ch is checking the beginning of a word.
-      if (ch === '"' || ch === "'" || ch === "`") {
-          state.tokenize = tokenString(ch);
-          return state.tokenize(stream, state);
-      }
       // if is a number
       if (/[\d\.]/.test(ch)) {
           if (ch === ".") {
@@ -80,33 +75,28 @@ CodeMirror.defineMode("todo", function(config, parserConfig) {
           stream.eatWhile(isOperatorChar);
           return "operator";
       }
+
+      if (ch === "#") {
+          stream.match(/[\w\s]*/);
+          return "header";
+      }
+
+      if (ch === "*" && state.startOfLine) {
+          stream.match(/\**/);
+          return "tag";
+      }
+      
+      // Essentially eats anything that isn't a punctuation except for ?
       stream.eatWhile(/[\w\$_\xa1-\uffff]/);
       var cur = stream.current();
       if (keywords.propertyIsEnumerable(cur)) {
-          if (cur === "case" || cur === "default") curPunc = "case";
           return "keyword";
       }
       if (atoms.propertyIsEnumerable(cur)) return "atom";
       return "variable";
   }
 
-  function tokenString(quote) {
-      return function (stream, state) {
-          var escaped = false,
-              next, end = false;
-          while ((next = stream.next()) != null) {
-              if (next === quote && !escaped) {
-                  end = true;
-                  break;
-              }
-              escaped = !escaped && quote !== "`" && next === "\\";
-          }
-          if (end || !(escaped || quote === "`"))
-              state.tokenize = tokenBase;
-          return "string";
-      };
-  }
-
+  // This checks if it is a comment
   function tokenComment(stream, state) {
       var maybeEnd = false,
           ch;
@@ -158,7 +148,6 @@ CodeMirror.defineMode("todo", function(config, parserConfig) {
               if (ctx.align === null) ctx.align = false;
               state.indented = stream.indentation();
               state.startOfLine = true;
-              if (ctx.type === "case") ctx.type = "}";
           }
           if (stream.eatSpace()) return null;
           curPunc = null;
@@ -169,7 +158,7 @@ CodeMirror.defineMode("todo", function(config, parserConfig) {
           if (curPunc === "{") pushContext(state, stream.column(), "}");
           else if (curPunc === "[") pushContext(state, stream.column(), "]");
           else if (curPunc === "(") pushContext(state, stream.column(), ")");
-          else if (curPunc === "}" && ctx.type == "}") popContext(state);
+          else if (curPunc === "}" && ctx.type === "}") popContext(state);
           else if (curPunc === ctx.type) popContext(state);
           state.startOfLine = false;
           return style;
@@ -192,4 +181,4 @@ CodeMirror.defineMode("todo", function(config, parserConfig) {
       lineComment: "//"
   }
 });
-CodeMirror.defineMIME("text/x-todolang", "todolang");
+CodeMirror.defineMIME("text/x-todo", "todo");
