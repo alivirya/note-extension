@@ -1,0 +1,42 @@
+/* Based on Sublime Text's Monokai theme */
+
+.cm-s-todo.CodeMirror { background: #282923; color: #f8f8f2; }
+.cm-s-todo div.CodeMirror-selected { background: #49483E; }
+.cm-s-todo .CodeMirror-line::selection, .cm-s-todo .CodeMirror-line > span::selection, .cm-s-todo .CodeMirror-line > span > span::selection { background: rgba(73, 72, 62, .99); }
+.cm-s-todo .CodeMirror-line::-moz-selection, .cm-s-todo .CodeMirror-line > span::-moz-selection, .cm-s-todo .CodeMirror-line > span > span::-moz-selection { background: rgba(73, 72, 62, .99); }
+.cm-s-todo .CodeMirror-gutters { background: #272822; border-right: 0px; }
+.cm-s-todo .CodeMirror-guttermarker { color: white; }
+.cm-s-todo .CodeMirror-guttermarker-subtle { color: #d0d0d0; }
+.cm-s-todo .CodeMirror-linenumber { color: #d0d0d0; }
+.cm-s-todo .CodeMirror-cursor { border-left: 1px solid #f8f8f0; }
+
+.cm-s-todo span.cm-comment { color: #75715e; }
+.cm-s-todo span.cm-atom { color: #ae81ff; }
+.cm-s-todo span.cm-number { color: #c5f2f8; }
+
+.cm-s-todo span.cm-comment.cm-attribute { color: #97b757; }
+.cm-s-todo span.cm-comment.cm-def { color: #bc9262; }
+.cm-s-todo span.cm-comment.cm-tag { color: #bc6283; }
+.cm-s-todo span.cm-comment.cm-type { color: #5998a6; }
+
+.cm-s-todo span.cm-property, .cm-s-todo span.cm-attribute { color: #a6e22e; }
+.cm-s-todo span.cm-keyword { color: #6967e7; }
+.cm-s-todo span.cm-builtin { color: #66d9ef; }
+.cm-s-todo span.cm-string { color: #e6db74; }
+
+.cm-s-todo span.cm-variable { color: #f8f8f2; }
+.cm-s-todo span.cm-variable-2 { color: #f8f8f2; background: #3B3C37 }
+.cm-s-todo span.cm-variable-3, .cm-s-todo span.cm-type { color: #66d9ef; }
+.cm-s-todo span.cm-def { color: #fd971f; }
+.cm-s-todo span.cm-bracket { color: #f8f8f2; }
+.cm-s-todo span.cm-tag { color: #66d9ef; font-weight: bold;}
+.cm-s-todo span.cm-header { color: #f92672; font-weight: bolder;}
+.cm-s-todo span.cm-header-2 { color: #fd971f; font-weight: bolder;}
+.cm-s-todo span.cm-link { color: #ae81ff; }
+.cm-s-todo span.cm-error { background: #f92672; color: #f8f8f0; }
+
+.cm-s-todo .CodeMirror-activeline-background { background: #373831; }
+.cm-s-todo .CodeMirror-matchingbracket {
+  text-decoration: underline;
+  color: white !important;
+}
