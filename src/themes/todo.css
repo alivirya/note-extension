@@ -25,14 +25,14 @@
 .cm-s-todo span.cm-string { color: #e6db74; }
 
 .cm-s-todo span.cm-variable { color: #f8f8f2; }
-.cm-s-todo span.cm-variable-2 { color: #f8f8f2; background: #3B3C37 }
+.cm-s-todo span.cm-code-block { color: #f8f8f2; background: #3B3C37 }
 .cm-s-todo span.cm-variable-3, .cm-s-todo span.cm-type { color: #66d9ef; }
 .cm-s-todo span.cm-def { color: #fd971f; }
 .cm-s-todo span.cm-bracket { color: #f8f8f2; }
 .cm-s-todo span.cm-tag { color: #66d9ef; font-weight: bold;}
 .cm-s-todo span.cm-header { color: #f92672; font-weight: bolder;}
 .cm-s-todo span.cm-header-2 { color: #fd971f; font-weight: bolder;}
-.cm-s-todo span.cm-link { color: #ae81ff; }
+.cm-s-todo span.cm-link { color: #63e6fd; text-decoration: underline;}
 .cm-s-todo span.cm-error { background: #f92672; color: #f8f8f0; }
 
 .cm-s-todo .CodeMirror-activeline-background { background: #373831; }

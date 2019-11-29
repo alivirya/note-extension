@@ -40,7 +40,6 @@ CodeMirror.defineMode("todo", function(config, parserConfig) {
 
   var indentUnit = 4;
   var isOperatorChar = /[+\-&^%:=<>!|\/]/;
-  var curPunc;
 
 // Stream is an object that contains the each word
   function tokenBase(stream, state) {
@@ -50,10 +49,10 @@ CodeMirror.defineMode("todo", function(config, parserConfig) {
         stream.match(/`{2}/);
         return "codeBlock";
     }
-
+    // TODO: Make state work for the entire line
     if (state.codeState) {
-        stream.eatWhile(/[^`]*/);
-        return "variable-2";
+        stream.eatWhile(/[^`]\s*/);
+        return "code-block";
     }
     // if is a number
     if (/[\d\.]/.test(ch)) {
@@ -66,9 +65,13 @@ CodeMirror.defineMode("todo", function(config, parserConfig) {
         }
         return "number";
     }
-    if (/[\[\]{}\(\),;\:\.]/.test(ch)) {
-        curPunc = ch;
-        return null;
+    if (/[\[\]{}\(\)]/.test(ch)) {
+        return "comment";
+    }
+
+    if (ch === "h") {
+        var isHttp = stream.match(/(ttps|ttp).*[^)]/);
+        if (isHttp.input.startsWith("ttp")) return "link"
     }
       
     if (ch === "/") {
@@ -86,6 +89,7 @@ CodeMirror.defineMode("todo", function(config, parserConfig) {
         return "operator";
     }
 
+    // TODO: Separate hashes and the words
     if (ch === "#" && state.startOfLine) {
         var no = stream.match(/[#\w\s]*/);
         if (no.input.startsWith("#")) return "header-2";
@@ -131,17 +135,6 @@ CodeMirror.defineMode("todo", function(config, parserConfig) {
         this.codeState = codeState;
     }
 
-    function pushContext(state, col, type) {
-        return state.context = new Context(state.indented, col, type, null, state.context, false);
-    }
-
-    function popContext(state) {
-        if (!state.context.prev) return;
-        var t = state.context.type;
-        if (t === ")" || t === "]" || t === "}")
-            state.indented = state.context.indented;
-        return state.context = state.context.prev;
-    }
     // Interface
 
     return {
@@ -162,18 +155,11 @@ CodeMirror.defineMode("todo", function(config, parserConfig) {
                 state.startOfLine = true;
             }
             if (stream.eatSpace()) return null;
-            curPunc = null;
             var style = (state.tokenize || tokenBase)(stream, state);
             if (style === "comment") return style;
             if (style === "codeBlock") state.codeState = !state.codeState;
             if (ctx.align == null) ctx.align = true;
 
-            if (curPunc === "{") pushContext(state, stream.column(), "}");
-            if (curPunc === "{") pushContext(state, stream.column(), "}");
-            else if (curPunc === "[") pushContext(state, stream.column(), "]");
-            else if (curPunc === "(") pushContext(state, stream.column(), ")");
-            else if (curPunc === "}" && ctx.type === "}") popContext(state);
-            else if (curPunc === ctx.type) popContext(state);
             state.startOfLine = false;
             return style;
         },
