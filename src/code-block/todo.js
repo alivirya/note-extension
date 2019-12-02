@@ -7,6 +7,8 @@ CodeMirror.defineMode("todo", function(config, parserConfig) {
       "weekly": true,
       "day": true,
       "daily": true,
+  };
+  var daysOfTheWeek = {
       "monday": true,
       "tuesday": true,
       "wednesday": true,
@@ -14,6 +16,9 @@ CodeMirror.defineMode("todo", function(config, parserConfig) {
       "friday": true,
       "saturday": true,
       "sunday": true,
+  };
+  
+  var months = {
       "january": true,
       "february": true,
       "march": true,
@@ -41,18 +46,22 @@ CodeMirror.defineMode("todo", function(config, parserConfig) {
   var indentUnit = 4;
   var isOperatorChar = /[+\-&^%:=<>!|\/]/;
 
-// Stream is an object that contains the each word
+// Stream is an object that contains a line of object
   function tokenBase(stream, state) {
     var ch = stream.next();
       
     if (ch === "`") {
         stream.match(/`{2}/);
-        return "codeBlock";
+        return "codeState";
     }
     // TODO: Make state work for the entire line
     if (state.codeState) {
-        stream.eatWhile(/[^`]\s*/);
-        return "code-block";
+        stream.eatWhile(/[^`]*/);
+        return "code";
+    } else if (state.headerLine) {
+        if (stream.eol()) state.headerLine = !state.headerLine;
+        stream.eatWhile(/w\s]*/);
+        return "h-text";
     }
     // if is a number
     if (/[\d\.]/.test(ch)) {
@@ -91,7 +100,7 @@ CodeMirror.defineMode("todo", function(config, parserConfig) {
 
     // TODO: Separate hashes and the words
     if (ch === "#" && state.startOfLine) {
-        var no = stream.match(/[#\w\s]*/);
+        var no = stream.match(/[#]*/);
         if (no.input.startsWith("#")) return "header-2";
         else return "header";
     }
@@ -104,10 +113,10 @@ CodeMirror.defineMode("todo", function(config, parserConfig) {
     // Essentially eats anything that isn't a punctuation except for ?
     stream.eatWhile(/[\w\$_\xa1-\uffff]/);
     var cur = stream.current();
-    if (keywords.propertyIsEnumerable(cur)) {
-        return "keyword";
-    }
+    if (keywords.propertyIsEnumerable(cur)) return "keyword";
     if (atoms.propertyIsEnumerable(cur)) return "atom";
+    if (months.propertyIsEnumerable(cur)) return "month";
+    if (daysOfTheWeek.propertyIsEnumerable(cur)) return "day"
         return "variable";
     }
 
@@ -126,13 +135,14 @@ CodeMirror.defineMode("todo", function(config, parserConfig) {
         return "comment";
     }
 
-    function Context(indented, column, type, align, prev, codeState) {
+    function Context(indented, column, type, align, prev, codeState, headerLine) {
         this.indented = indented;
         this.column = column;
         this.type = type;
         this.align = align;
         this.prev = prev;
         this.codeState = codeState;
+        this.headerLine = headerLine
     }
 
     // Interface
@@ -141,7 +151,7 @@ CodeMirror.defineMode("todo", function(config, parserConfig) {
         startState: function (basecolumn) {
             return {
                 tokenize: null,
-                context: new Context((basecolumn || 0) - indentUnit, 0, "top", false, false),
+                context: new Context((basecolumn || 0) - indentUnit, 0, "top", false, false, false),
                 indented: 0,
                 startOfLine: true
             };
@@ -157,7 +167,8 @@ CodeMirror.defineMode("todo", function(config, parserConfig) {
             if (stream.eatSpace()) return null;
             var style = (state.tokenize || tokenBase)(stream, state);
             if (style === "comment") return style;
-            if (style === "codeBlock") state.codeState = !state.codeState;
+            if (style === "codeState") state.codeState = !state.codeState;
+            if (style.startsWith("header")) state.headerLine = !state.headerLine;
             if (ctx.align == null) ctx.align = true;
 
             state.startOfLine = false;
