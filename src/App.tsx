@@ -1,14 +1,15 @@
 import "./App.css";
 import "typeface-roboto-mono"
 
+import Editor from './modules/Editor'
 import React from 'react';
-import Tabs from './Tabs';
+import Tabs from './modules/Tabs';
 
 const App: React.FC = () => {
   return (
     <div className="App">
       <Tabs />
-      <textarea id="editor"></textarea>
+      <Editor />
     </div>
   );
 }

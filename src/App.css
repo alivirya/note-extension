@@ -24,9 +24,9 @@
 
 .CodeMirror {
   text-align: left !important;
-  height: 96%;
-  font-size: 20px;
-  font-family: "Roboto Mono";
+  height: 96% !important;
+  font-size: 20px !important;
+  font-family: "Roboto Mono" !important;
 }
 
 #tabArea {
@@ -40,6 +40,7 @@
 
 #add {
   font-weight: bolder;
+  color: white;
   width: 4%;
   height: 100%;
   background-color: #272822;
@@ -50,6 +51,7 @@
 }
 
 .tab {
+  color: white;
   height: 100%;
   background-color: #272822;
   margin: 5px 0 0;
