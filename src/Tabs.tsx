@@ -24,7 +24,6 @@ class Tabs extends React.Component<{}, TabProps> {
     componentDidMount() {
         // Get all parts of the progress bar.
         let tabs = $('.tab');
-        console.log(tabs);
         // With each one, calculate the percentage and apply the width.
         tabs.each(function() {
             $(this).css('width', ((95 - (0.2 * (tabs.length+1)))/ tabs.length) + '%');

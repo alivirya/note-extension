@@ -11,11 +11,17 @@ import React from "react";
 import ReactDOM from "react-dom";
 
 ReactDOM.render(<App />, document.getElementById("root"));
+
+/*
+In Javascript, you cannot read from a local file, (without it being user selected), as this results in some security issues. (If the server can read from your local
+    computer... who knows what it can access?)
+*/
+
 let editor = CodeMirror.fromTextArea(document.getElementById("editor")! as HTMLTextAreaElement, {
     lineNumbers: true,
     indentUnit: 4,
     theme: "todo",
-    mode: "todo"
+    mode: "todo",
 });
 editor.refresh()
 // If you want your app to work offline and load faster, you can change
