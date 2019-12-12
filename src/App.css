@@ -57,3 +57,11 @@
   border-top-left-radius: 15px;
   border-top-right-radius: 15px
 }
+
+.tab:hover {
+  background-color: #464742;
+}
+
+#add:hover {
+  background-color: #464742;
+}
