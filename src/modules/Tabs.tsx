@@ -3,19 +3,26 @@ import { NoteInformation } from '../App';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-type MainTabProps = {
+// Have to change colors to adjust for colours of themes
+
+interface TabsProps extends TabProps {
     notes: NoteInformation[];
-    updateTabName?(name: string): void;
-    updateCurrentTab?(tab: string) : void;
     addTab?(): void;
+}
+
+interface TabProps {
+    currentTab?: string;
+    tabName?: string;
+    updateTabName?(oldName: string, newName: string): void;
+    updateCurrentTab?(tab: string): void;
 }
 
 type TabState = {
     notes: NoteInformation[];
 }
 
-class Tabs extends React.Component<MainTabProps, TabState> {
-    constructor(props: MainTabProps) {
+class Tabs extends React.Component<TabsProps, TabState> {
+    constructor(props: TabsProps) {
         super(props);
         this.state = {
             notes: props.notes,
@@ -39,7 +46,6 @@ class Tabs extends React.Component<MainTabProps, TabState> {
     componentDidUpdate() {
         // Get all parts of the progress bar.
         let tabs = $('.tab');
-        console.log(tabs);
         // With each one, calculate the percentage and apply the width.
         tabs.each(function() {
             $(this).css('width', ((95 - (0.2 * (tabs.length+1)))/ tabs.length) + '%');
@@ -49,21 +55,25 @@ class Tabs extends React.Component<MainTabProps, TabState> {
     render() {
         return (
             <div id="tabArea">
-                <RenderTabs notes={this.props.notes}/><div id="add" onClick={this.onClick}>+</div>
+                <RenderTabs notes={this.props.notes} updateTabName={this.props.updateTabName} 
+                    updateCurrentTab={this.props.updateCurrentTab} currentTab={this.props.currentTab}/>
+                <div id="add" onClick={this.onClick}>+
+                </div>
             </div>
         )
     }
 };
 
-class RenderTabs extends React.Component<MainTabProps, {}> {
-    constructor(props: MainTabProps) {
+class RenderTabs extends React.Component<TabsProps, {}> {
+    constructor(props: TabsProps) {
         super(props);
     }
 
     createTabs() {
         let tabArr = [];
         for (let i = 0; i < this.props.notes.length; i++) {
-            tabArr[i] = <Tab name={this.props.notes[i].tabName}/>
+            tabArr[i] = <Tab tabName={this.props.notes[i].tabName} updateCurrentTab={this.props.updateCurrentTab} 
+                updateTabName={this.props.updateTabName} currentTab={this.props.currentTab} />
         }
 
         return tabArr
@@ -75,18 +85,50 @@ class RenderTabs extends React.Component<MainTabProps, {}> {
 
 }
 
+//Need to make sure that names are unique
 
-//Have to add handlechange
-const Tab = (props: any) => {
-    return (
-        <div className="tab" contentEditable="true">
-            {props.name}
-        </div>
-    )
-}
+class Tab extends React.Component<TabProps, {}> {
+    constructor(props: TabProps) {
+        super(props);
+        this.onClick = this.onClick.bind(this);
+    }
 
-Tab.propTypes = {
-    name: PropTypes.string.isRequired
+    componentDidMount() {
+        try {
+            let doc = document.getElementById(this.props.tabName!)!
+            if (this.props.tabName! === this.props.currentTab) doc.style.backgroundColor = "#272822";
+            else doc.style.backgroundColor = "#3c3d37";
+            /*doc.addEventListener("input", () => {
+                this.props.updateTabName!(this.props.tabName!, doc.textContent ? doc.textContent : "");
+            })*/
+        } catch(err) {
+            console.log(err);
+        }
+    }
+
+    componentDidUpdate() {
+        try {
+            let doc = document.getElementById(this.props.tabName!)!
+            if (this.props.tabName! === this.props.currentTab) doc.style.backgroundColor = "#272822";
+            else doc.style.backgroundColor = "#3c3d37";
+        } catch(err) {
+            console.log(err);
+        }
+
+    }
+
+    onClick() {
+        this.props.updateCurrentTab!(this.props.tabName!);
+    }
+
+    //Make this textbox that is editable smaller and not the entire tab
+    render() {
+        return (
+            <div className="tab" id={this.props.tabName} onClick={this.onClick}>
+                {this.props.tabName}
+            </div>
+        )
+    }
 }
 
 export default Tabs;

@@ -4,7 +4,6 @@ import "typeface-roboto-mono"
 import Editor from './modules/Editor'
 import React from 'react';
 import Tabs from './modules/Tabs';
-import { stringTypeAnnotation } from "@babel/types";
 
 export interface NoteInformation {
     tabName: string;
@@ -34,7 +33,7 @@ class App extends React.Component<{}, AppState> {
         super(props);
         this.state = {
             notes: notes,
-            currentTab: ""
+            currentTab: notes[0].tabName
         };
         this.updateTabName = this.updateTabName.bind(this);
         this.updateCurrentTab = this.updateCurrentTab.bind(this);
@@ -42,12 +41,14 @@ class App extends React.Component<{}, AppState> {
     }
 
     //NOTE: Is there a way to just update one of the notes?? as opposed to the entire array
-    updateTabName(name: string) {
+    updateTabName(oldName: string, newName: string) {
         this.setState((state) => {
             let noteCopy = state.notes;
             for (let i = 0; i < state.notes.length; i++) {
-                if (state.notes[i].tabName == name) {
-                    noteCopy[i].tabName = name;
+                if (state.notes[i].tabName == oldName) {
+                    localStorage.removeItem(oldName);
+                    noteCopy[i].tabName = newName;
+                    localStorage.setItem(newName, noteCopy[i].editorData);
                     return {
                         notes: noteCopy,
                         currentTab: state.currentTab
@@ -73,16 +74,19 @@ class App extends React.Component<{}, AppState> {
     }
 
     updateCurrentTab(tab: string) {
-        this.setState({
-            currentTab: tab
+        this.setState((state) => {
+            return {
+                notes: state.notes,
+                currentTab: tab
+            }
         });
     }
 
     render() {
         return (
             <div className="App">
-              <Tabs notes={this.state.notes} updateCurrentTab={this.updateCurrentTab} updateTabName={this.updateTabName} addTab={this.addTab}/>
-              <Editor editorName="test"/>
+              <Tabs notes={this.state.notes} updateCurrentTab={this.updateCurrentTab} updateTabName={this.updateTabName} addTab={this.addTab} currentTab={this.state.currentTab}/>
+              <Editor currentTab={this.state.currentTab}/>
             </div>
         )
     }

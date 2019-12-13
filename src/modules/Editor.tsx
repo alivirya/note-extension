@@ -6,7 +6,7 @@ import CodeMirror from "codemirror"
 import React from 'react';
 
 type EditorProps = { 
-    editorName: string;
+    currentTab: string;
 }
 
 class Editor extends React.Component<EditorProps, {}> {
@@ -15,7 +15,7 @@ class Editor extends React.Component<EditorProps, {}> {
     constructor(props: EditorProps) {
         super(props);
         this.handleChange = this.handleChange.bind(this);
-        this.name = props.editorName;
+        this.name = props.currentTab;
     }
 
     componentDidMount() {
@@ -30,6 +30,14 @@ class Editor extends React.Component<EditorProps, {}> {
             this.editor.setValue(localStorage.getItem(this.name)!);
         }
         this.editor.on("changes", this.handleChange)
+        this.editor.refresh()
+    }
+
+    componentDidUpdate() {
+        this.name = this.props.currentTab;
+        if (localStorage.getItem(this.name)) {
+            this.editor.setValue(localStorage.getItem(this.name)!);
+        }
         this.editor.refresh()
     }
 

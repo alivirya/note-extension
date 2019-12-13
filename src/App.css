@@ -53,7 +53,7 @@
 .tab {
   color: white;
   height: 100%;
-  background-color: #272822;
+  background-color: #3c3d37;
   margin: 5px 0 0;
   padding: 5px 10px 10px 10px;
   border-top-left-radius: 15px;
@@ -68,3 +68,4 @@
 #add:hover {
   background-color: #464742;
 }
+
