@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import { NoteInformation } from '../App';
+import { NoteInformation } from './Main';
 import React from 'react';
 import Sortable from 'sortablejs';
 

@@ -167,7 +167,7 @@ CodeMirror.defineMode("todo", function(config, parserConfig) {
             var style = (state.tokenize || tokenBase)(stream, state);
             if (style === "comment") return style;
             if (style === "codeState") state.codeState = !state.codeState;
-            if (style.startsWith("header") || style == "h-text") state.headerLine = !state.headerLine;
+            if (style.startsWith("header") || style === "h-text") state.headerLine = !state.headerLine;
             if (ctx.align == null) ctx.align = true;
 
             state.startOfLine = false;

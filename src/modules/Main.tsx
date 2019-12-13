@@ -1,16 +1,16 @@
-import "./App.css";
+import "../static/main.css";
 import "typeface-roboto-mono"
 
-import Editor from './modules/Editor'
+import Editor from './Editor'
 import React from 'react';
-import Tabs from './modules/Tabs';
+import Tabs from './Tabs';
 
 export interface NoteInformation {
     tabName: string;
     editorData: string;
 }
 
-type AppState = {
+type MainState = {
     notes: NoteInformation[];
     currentTab: string;
 }
@@ -34,7 +34,7 @@ if (notes.length === 0) {
 /*
     THERE MUST BE A BETTER WAY TO DO THIS.
 */
-class App extends React.Component<{}, AppState> {
+class Main extends React.Component<{}, MainState> {
     constructor(props: any) {
         super(props);
         this.state = {
@@ -119,7 +119,7 @@ class App extends React.Component<{}, AppState> {
 
     render() {
         return (
-            <div className="App">
+            <div className="Main">
               <Tabs notes={this.state.notes} updateCurrentTab={this.updateCurrentTab} updateTabName={this.updateTabName} removeTab={this.removeTab}
                 addTab={this.addTab} currentTab={this.state.currentTab}/>
               <Editor currentTab={this.state.currentTab}/>
@@ -128,4 +128,4 @@ class App extends React.Component<{}, AppState> {
     }
 }
 
-export default App;
+export default Main;
