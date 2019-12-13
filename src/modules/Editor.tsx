@@ -35,7 +35,7 @@ class Editor extends React.Component<EditorProps, {}> {
 
     componentDidUpdate() {
         this.name = this.props.currentTab;
-        if (localStorage.getItem(this.name)) {
+        if (localStorage.getItem(this.name) !== null) {
             this.editor.setValue(localStorage.getItem(this.name)!);
         }
         this.editor.refresh()

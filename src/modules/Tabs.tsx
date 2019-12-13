@@ -1,7 +1,7 @@
 import $ from 'jquery';
 import { NoteInformation } from '../App';
-import PropTypes from 'prop-types';
 import React from 'react';
+import Sortable from 'sortablejs';
 
 // Have to change colors to adjust for colours of themes
 
@@ -15,6 +15,7 @@ interface TabProps {
     tabName?: string;
     updateTabName?(oldName: string, newName: string): void;
     updateCurrentTab?(tab: string): void;
+    removeTab?(tab: string): void;
 }
 
 type TabState = {
@@ -41,6 +42,9 @@ class Tabs extends React.Component<TabsProps, TabState> {
         tabs.each(function() {
             $(this).css('width', ((95 - (0.2 * (tabs.length+1)))/ tabs.length) + '%');
         });
+
+        let tabArea = document.getElementById("tabArea")!;
+        Sortable.create(tabArea);
     }
 
     componentDidUpdate() {
@@ -55,7 +59,7 @@ class Tabs extends React.Component<TabsProps, TabState> {
     render() {
         return (
             <div id="tabArea">
-                <RenderTabs notes={this.props.notes} updateTabName={this.props.updateTabName} 
+                <RenderTabs notes={this.props.notes} updateTabName={this.props.updateTabName} removeTab={this.props.removeTab}
                     updateCurrentTab={this.props.updateCurrentTab} currentTab={this.props.currentTab}/>
                 <div id="add" onClick={this.onClick}>+
                 </div>
@@ -65,14 +69,10 @@ class Tabs extends React.Component<TabsProps, TabState> {
 };
 
 class RenderTabs extends React.Component<TabsProps, {}> {
-    constructor(props: TabsProps) {
-        super(props);
-    }
-
     createTabs() {
         let tabArr = [];
         for (let i = 0; i < this.props.notes.length; i++) {
-            tabArr[i] = <Tab tabName={this.props.notes[i].tabName} updateCurrentTab={this.props.updateCurrentTab} 
+            tabArr[i] = <Tab tabName={this.props.notes[i].tabName} updateCurrentTab={this.props.updateCurrentTab} removeTab={this.props.removeTab}
                 updateTabName={this.props.updateTabName} currentTab={this.props.currentTab} />
         }
 
@@ -90,7 +90,8 @@ class RenderTabs extends React.Component<TabsProps, {}> {
 class Tab extends React.Component<TabProps, {}> {
     constructor(props: TabProps) {
         super(props);
-        this.onClick = this.onClick.bind(this);
+        this.onTabClick = this.onTabClick.bind(this);
+        this.onCloseClick = this.onCloseClick.bind(this);
     }
 
     componentDidMount() {
@@ -98,9 +99,14 @@ class Tab extends React.Component<TabProps, {}> {
             let doc = document.getElementById(this.props.tabName!)!
             if (this.props.tabName! === this.props.currentTab) doc.style.backgroundColor = "#272822";
             else doc.style.backgroundColor = "#3c3d37";
-            /*doc.addEventListener("input", () => {
-                this.props.updateTabName!(this.props.tabName!, doc.textContent ? doc.textContent : "");
-            })*/
+            let docName = document.getElementById(this.props.tabName! + "Name")!
+            // TODO: This needs to be extended so that the name is also updated on the event of pressing something outside of the text area
+            docName.addEventListener("keydown", (e) => {
+                if (e.keyCode === 13 ) {
+                    e.preventDefault();
+                    this.props.updateTabName!(this.props.tabName!, docName.textContent ? docName.textContent : "");
+                }
+            })
         } catch(err) {
             console.log(err);
         }
@@ -117,15 +123,24 @@ class Tab extends React.Component<TabProps, {}> {
 
     }
 
-    onClick() {
+    onTabClick() {
         this.props.updateCurrentTab!(this.props.tabName!);
+    }
+    
+    onCloseClick() {
+        this.props.removeTab!(this.props.tabName!);
     }
 
     //Make this textbox that is editable smaller and not the entire tab
     render() {
         return (
-            <div className="tab" id={this.props.tabName} onClick={this.onClick}>
-                {this.props.tabName}
+            <div className="tab" id={this.props.tabName} onClick={this.onTabClick}>
+                <div className="filler"></div>
+                <div className="tabContent" id={this.props.tabName+"Name"} contentEditable="true">
+                    {this.props.tabName}
+                </div>
+                <div className="filler"></div>
+                <div className="close" onClick={this.onCloseClick}>x</div>
             </div>
         )
     }

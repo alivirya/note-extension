@@ -61,6 +61,26 @@
   outline: 0;
 }
 
+.filler {
+  display: inline-block;
+  width: 25%;
+}
+
+.tabContent {
+  display: inline-block;
+  width: 40%;
+  outline: none;
+}
+
+.close {
+  display: inline-block;
+  width: 10%;
+}
+
+.close:hover {
+  font-weight: bolder;
+}
+
 .tab:hover {
   background-color: #464742;
 }
