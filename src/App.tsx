@@ -23,6 +23,14 @@ for ( var i = 0; i < localStorage.length; i++ ) {
         editorData: localStorage.getItem(localStorage.key(i)!)!, 
     }
 }
+
+if (notes.length === 0) {
+    notes[0] = {
+        tabName: "untitled",
+        editorData: ""
+    }
+}
+
 /*
     THERE MUST BE A BETTER WAY TO DO THIS.
 */
@@ -90,7 +98,16 @@ class App extends React.Component<{}, AppState> {
                 if (state.notes[i].tabName === tab) {
                     noteCopy.splice(i, 1);
                     localStorage.removeItem(tab);
-                    this.updateCurrentTab(state.notes[i-1].tabName);
+
+                    // TODO: Need to fix this for when the length is 0
+                    if (i === 0 && state.notes.length !== 1) {
+                        this.updateCurrentTab(state.notes[i].tabName);
+                    } else if (i === 0) {
+                        this.addTab();
+                        this.updateCurrentTab(state.notes[i].tabName);
+                    } else {
+                        this.updateCurrentTab(state.notes[i-1].tabName);
+                    }
                     return {
                         notes: noteCopy,
                         currentTab: state.currentTab,
