@@ -1,24 +1,30 @@
 import $ from 'jquery';
+import { NoteInformation } from '../App';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-type TabProps = {
-    tabs: number;
+type MainTabProps = {
+    notes: NoteInformation[];
+    updateTabName?(name: string): void;
+    updateCurrentTab?(tab: string) : void;
+    addTab?(): void;
 }
 
-class Tabs extends React.Component<{}, TabProps> {
-    constructor(props: any) {
+type TabState = {
+    notes: NoteInformation[];
+}
+
+class Tabs extends React.Component<MainTabProps, TabState> {
+    constructor(props: MainTabProps) {
         super(props);
         this.state = {
-            tabs: 1,
+            notes: props.notes,
         };
         this.onClick = this.onClick.bind(this);
     }
 
     onClick() {
-        this.setState(state => ({
-            tabs: state.tabs + 1
-        }));
+        this.props.addTab!();
     }
 
     componentDidMount() {
@@ -31,7 +37,6 @@ class Tabs extends React.Component<{}, TabProps> {
     }
 
     componentDidUpdate() {
-        console.log("test");
         // Get all parts of the progress bar.
         let tabs = $('.tab');
         console.log(tabs);
@@ -44,21 +49,21 @@ class Tabs extends React.Component<{}, TabProps> {
     render() {
         return (
             <div id="tabArea">
-                <RenderTabs tabs={this.state.tabs}/><div id="add" onClick={this.onClick}>+</div>
+                <RenderTabs notes={this.props.notes}/><div id="add" onClick={this.onClick}>+</div>
             </div>
         )
     }
 };
 
-class RenderTabs extends React.Component<TabProps, {}> {
-    constructor(props: TabProps) {
+class RenderTabs extends React.Component<MainTabProps, {}> {
+    constructor(props: MainTabProps) {
         super(props);
     }
 
     createTabs() {
         let tabArr = [];
-        for (let i = 0; i < this.props.tabs; i++) {
-            tabArr[i] = <Tab name="untitled"/>
+        for (let i = 0; i < this.props.notes.length; i++) {
+            tabArr[i] = <Tab name={this.props.notes[i].tabName}/>
         }
 
         return tabArr
@@ -70,9 +75,11 @@ class RenderTabs extends React.Component<TabProps, {}> {
 
 }
 
+
+//Have to add handlechange
 const Tab = (props: any) => {
     return (
-        <div className="tab">
+        <div className="tab" contentEditable="true">
             {props.name}
         </div>
     )

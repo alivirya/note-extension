@@ -100,7 +100,6 @@ CodeMirror.defineMode("todo", function(config, parserConfig) {
     // TODO: Separate hashes and the words
     if (ch === "#" && state.startOfLine) {
         var no = stream.match(/[#]*/);
-        console.log(no);
         if (no.input.startsWith("#")) return "header-2";
         else return "header";
     }

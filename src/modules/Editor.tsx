@@ -5,11 +5,17 @@ import "../code-block/todo"
 import CodeMirror from "codemirror"
 import React from 'react';
 
-class Editor extends React.Component {
+type EditorProps = { 
+    editorName: string;
+}
+
+class Editor extends React.Component<EditorProps, {}> {
     private editor!: CodeMirror.Editor;
-    constructor(props: any) {
+    private name: string;
+    constructor(props: EditorProps) {
         super(props);
         this.handleChange = this.handleChange.bind(this);
+        this.name = props.editorName;
     }
 
     componentDidMount() {
@@ -19,12 +25,16 @@ class Editor extends React.Component {
             theme: "todo",
             mode: "todo",
         });
-        this.editor.on("change", this.handleChange)
+
+        if (localStorage.getItem(this.name)) {
+            this.editor.setValue(localStorage.getItem(this.name)!);
+        }
+        this.editor.on("changes", this.handleChange)
         this.editor.refresh()
     }
 
     handleChange() {
-        console.log(this.editor.getValue())
+        localStorage.setItem(this.name, this.editor.getValue());
     }
 
     render() {
@@ -33,8 +43,6 @@ class Editor extends React.Component {
         )
     }
 }
-
-//TODO: fix error with null in todo.js. Screenshot at desktop
 
 export default Editor;
 
