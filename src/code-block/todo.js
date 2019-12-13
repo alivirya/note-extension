@@ -58,9 +58,8 @@ CodeMirror.defineMode("todo", function(config, parserConfig) {
     if (state.codeState) {
         stream.eatWhile(/[^`]*/);
         return "code";
-    } else if (state.headerLine) {
-        if (stream.eol()) state.headerLine = !state.headerLine;
-        stream.eatWhile(/w\s]*/);
+    } else if (state.headerLine) { 
+        stream.eatWhile(/[^\n]*/);
         return "h-text";
     }
     // if is a number
@@ -79,8 +78,8 @@ CodeMirror.defineMode("todo", function(config, parserConfig) {
     }
 
     if (ch === "h") {
-        var isHttp = stream.match(/(ttps|ttp).*[^)]/);
-        if (isHttp.input.startsWith("ttp")) return "link"
+        var isHttp = stream.match(/(ttps|ttp)[^\s)]*/);
+        if (isHttp && isHttp.input.startsWith("ttp")) return "link";
     }
       
     if (ch === "/") {
@@ -101,6 +100,7 @@ CodeMirror.defineMode("todo", function(config, parserConfig) {
     // TODO: Separate hashes and the words
     if (ch === "#" && state.startOfLine) {
         var no = stream.match(/[#]*/);
+        console.log(no);
         if (no.input.startsWith("#")) return "header-2";
         else return "header";
     }
@@ -168,7 +168,7 @@ CodeMirror.defineMode("todo", function(config, parserConfig) {
             var style = (state.tokenize || tokenBase)(stream, state);
             if (style === "comment") return style;
             if (style === "codeState") state.codeState = !state.codeState;
-            if (style.startsWith("header")) state.headerLine = !state.headerLine;
+            if (style.startsWith("header") || style == "h-text") state.headerLine = !state.headerLine;
             if (ctx.align == null) ctx.align = true;
 
             state.startOfLine = false;
