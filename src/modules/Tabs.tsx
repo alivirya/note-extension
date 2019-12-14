@@ -5,17 +5,24 @@ import Sortable from 'sortablejs';
 
 // Have to change colors to adjust for colours of themes
 
-interface TabsProps extends TabProps {
-    notes: NoteInformation[];
-    addTab?(): void;
+interface StandardTabProps {
+    currentTab: string;
+    updateTabName(oldName: string, newName: string): void;
+    updateCurrentTab(tab: string): void;
+    removeTab(tab: string): void;
 }
 
-interface TabProps {
-    currentTab?: string;
-    tabName?: string;
-    updateTabName?(oldName: string, newName: string): void;
-    updateCurrentTab?(tab: string): void;
-    removeTab?(tab: string): void;
+interface TabsProps extends StandardTabProps {
+    notes: NoteInformation[];
+    addTab(): void;
+}
+
+interface RenderTabProps extends StandardTabProps {
+    notes: NoteInformation[];
+}
+
+interface TabProps extends StandardTabProps {
+    tabName: string;
 }
 
 type TabState = {
@@ -36,18 +43,16 @@ class Tabs extends React.Component<TabsProps, TabState> {
     }
 
     componentDidMount() {
-        // Get all parts of the progress bar.
-        let tabs = $('.tab');
-        // With each one, calculate the percentage and apply the width.
-        tabs.each(function() {
-            $(this).css('width', ((95 - (0.2 * (tabs.length+1)))/ tabs.length) + '%');
-        });
-
+        this.updateTabWidth();
         let tabArea = document.getElementById("tabArea")!;
         Sortable.create(tabArea);
     }
 
     componentDidUpdate() {
+        this.updateTabWidth();
+    }
+
+    updateTabWidth() {
         // Get all parts of the progress bar.
         let tabs = $('.tab');
         // With each one, calculate the percentage and apply the width.
@@ -68,7 +73,7 @@ class Tabs extends React.Component<TabsProps, TabState> {
     }
 };
 
-class RenderTabs extends React.Component<TabsProps, {}> {
+class RenderTabs extends React.Component<RenderTabProps, {}> {
     createTabs() {
         let tabArr = [];
         for (let i = 0; i < this.props.notes.length; i++) {
@@ -96,17 +101,21 @@ class Tab extends React.Component<TabProps, {}> {
 
     componentDidMount() {
         try {
-            let doc = document.getElementById(this.props.tabName!)!
-            if (this.props.tabName! === this.props.currentTab) doc.style.backgroundColor = "#272822";
-            else doc.style.backgroundColor = "#3c3d37";
-            let docName = document.getElementById(this.props.tabName! + "Name")!
+            let doc = document.getElementById(this.props.tabName)
+            if (doc !== null) {
+                if (this.props.tabName === this.props.currentTab) doc.style.backgroundColor = "#272822";
+                else doc.style.backgroundColor = "#3c3d37";
+            }
+            let docName = document.getElementById(this.props.tabName + "Name")!
             // TODO: This needs to be extended so that the name is also updated on the event of pressing something outside of the text area
-            docName.addEventListener("keydown", (e) => {
-                if (e.keyCode === 13 ) {
-                    e.preventDefault();
-                    this.props.updateTabName!(this.props.tabName!, docName.textContent ? docName.textContent : "");
-                }
-            })
+            if (docName !== null) {
+                docName.addEventListener("keydown", (e) => {
+                    if (e.keyCode === 13 ) {
+                        e.preventDefault();
+                        this.props.updateTabName!(this.props.tabName, docName.textContent ? docName.textContent : "");
+                    }
+                })
+            }
         } catch(err) {
             console.log(err);
         }
@@ -114,8 +123,8 @@ class Tab extends React.Component<TabProps, {}> {
 
     componentDidUpdate() {
         try {
-            let doc = document.getElementById(this.props.tabName!)!
-            if (this.props.tabName! === this.props.currentTab) doc.style.backgroundColor = "#272822";
+            let doc = document.getElementById(this.props.tabName)!
+            if (this.props.tabName === this.props.currentTab) doc.style.backgroundColor = "#272822";
             else doc.style.backgroundColor = "#3c3d37";
         } catch(err) {
             console.log(err);
@@ -124,11 +133,11 @@ class Tab extends React.Component<TabProps, {}> {
     }
 
     onTabClick() {
-        this.props.updateCurrentTab!(this.props.tabName!);
+        this.props.updateCurrentTab(this.props.tabName);
     }
     
     onCloseClick() {
-        this.props.removeTab!(this.props.tabName!);
+        this.props.removeTab(this.props.tabName);
     }
 
     //Make this textbox that is editable smaller and not the entire tab

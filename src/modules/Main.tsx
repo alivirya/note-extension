@@ -1,5 +1,5 @@
-import "../static/main.css";
 import "typeface-roboto-mono"
+import "../static/App.css";
 
 import Editor from './Editor'
 import React from 'react';
@@ -24,6 +24,7 @@ for ( var i = 0; i < localStorage.length; i++ ) {
     }
 }
 
+// TODO: A default way of dealing with new files...
 if (notes.length === 0) {
     notes[0] = {
         tabName: "untitled",
@@ -119,7 +120,7 @@ class Main extends React.Component<{}, MainState> {
 
     render() {
         return (
-            <div className="Main">
+            <div className="App">
               <Tabs notes={this.state.notes} updateCurrentTab={this.updateCurrentTab} updateTabName={this.updateTabName} removeTab={this.removeTab}
                 addTab={this.addTab} currentTab={this.state.currentTab}/>
               <Editor currentTab={this.state.currentTab}/>
