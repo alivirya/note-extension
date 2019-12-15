@@ -1,7 +1,7 @@
 import "typeface-roboto-mono"
 import "../static/App.css";
 
-import Editor from './Editor'
+import Editor from './Editor';
 import React from 'react';
 import Tabs from './Tabs';
 
@@ -70,14 +70,13 @@ class Main extends React.Component<{}, MainState> {
     addTab() {
         this.setState((state) => {
             let noteCopy = state.notes;
-            let newTab = "untitled";
-            let newTabContent = "";
-            noteCopy.push({
-                tabName: newTab,
-                editorData: newTabContent
-            });
+            let newTab = {
+                tabName: "untitled",
+                editorData: ""
+            };
+            noteCopy.push(newTab);
 
-            localStorage.setItem(newTab, newTabContent);
+            localStorage.setItem(newTab.tabName, newTab.editorData);
         
             return {
                 notes: noteCopy,
@@ -95,17 +94,17 @@ class Main extends React.Component<{}, MainState> {
     removeTab(tab: string) {
         this.setState((state) => {
             let noteCopy = state.notes;
+            let originalLength = state.notes.length;
             for (let i = 0; i < state.notes.length; i++) {
                 if (state.notes[i].tabName === tab) {
                     noteCopy.splice(i, 1);
                     localStorage.removeItem(tab);
-
-                    // TODO: Need to fix this for when the length is 0
-                    if (i === 0 && state.notes.length !== 1) {
+                    if (i === 0 && originalLength !== 1) {
                         this.updateCurrentTab(state.notes[i].tabName);
                     } else if (i === 0) {
                         this.addTab();
-                        this.updateCurrentTab(state.notes[i].tabName);
+                        // TODO: This is hardcoded for now
+                        this.updateCurrentTab("untitled");
                     } else {
                         this.updateCurrentTab(state.notes[i-1].tabName);
                     }
