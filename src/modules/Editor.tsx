@@ -75,7 +75,10 @@ class Editor extends React.Component<EditorProps, EditorState> {
         let tabs = $('.tab');
         let tabArea = $('#tabArea');
         let footer = $('#footer');
-        footer.css("background-color", otherColors);
+        let selector = $('#themeSelector');
+        footer.css("background-color", color);
+        selector.css("color", complement);
+        selector.css("background-color", otherColors);
         tabArea.css("background-color", otherColors);
         
         // With each one, calculate the percentage and apply the width.

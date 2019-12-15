@@ -43,7 +43,7 @@ class Footer extends React.Component<FooterProps, {}> {
 
     updateTheme() {
         try {
-            let selection = document.getElementById("themeSelection") as HTMLInputElement;
+            let selection = document.getElementById("themeSelector") as HTMLInputElement;
             if (selection !== null) {
                 let theme = selection.value;
                 this.props.updateTheme(theme);
@@ -84,11 +84,9 @@ class Selection extends React.Component<SelectionProps, {}> {
 
     render() {
         return (
-            <div>
-                 <select id="themeSelection" onChange={this.props.updateTheme}>
-                    {this.createOptions()}
-                </select> 
-            </div>
+            <select id="themeSelector" onChange={this.props.updateTheme}>
+                {this.createOptions()}
+            </select> 
         )
     }
 }

@@ -10,7 +10,7 @@
 
 .CodeMirror {
   text-align: left !important;
-  height: 97% !important;
+  height: 96% !important;
   font-size: 20px !important;
   font-family: "Roboto Mono" !important;
 }
@@ -42,7 +42,17 @@
 }
 
 #footer {
-  height: 3%;
+  height: 4%;
+  display: flex;
+  flex-direction: column;
+}
+
+#themeSelector {
+  appearance: none;
+  outline: none;
+  border: none;
+  width: 20%;
+  margin: 10px;
 }
 
 .tab {
