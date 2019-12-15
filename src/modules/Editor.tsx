@@ -73,15 +73,13 @@ class Editor extends React.Component<EditorProps, EditorState> {
         let complement = invertRGB(color);
         let otherColors = getLighter(color);
         let tabs = $('.tab');
-        let tabArea = $('#tabArea');
-        let footer = $('#footer');
-        let selector = $('#themeSelector');
-        footer.css("background-color", color);
-        selector.css("color", complement);
-        selector.css("background-color", otherColors);
-        tabArea.css("background-color", otherColors);
+        $('#tabArea').css("background-color", otherColors);
+        $('#footer').css("background-color", color);
+        $('#add').css("background-color", color);
+        $('#add').css("color", complement);
+        $('#themeSelector').css("color", complement);
+        $('#themeSelector').css("background-color", otherColors);
         
-        // With each one, calculate the percentage and apply the width.
         tabs.each(function() {
             $(this).css('background-color', color);
             $(this).css('color', complement);

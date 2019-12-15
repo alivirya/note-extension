@@ -5,11 +5,17 @@
   "version": "1.0.0",
   "description": "Note taker application.",
   "icons": {
-    "16": "notes-192.png",
-    "48": "notes-512.png"
+    "16": "16.png",
+    "32": "32.png",
+    "64": "64.png"
   },
   "chrome_url_overrides": {
     "newtab": "index.html"
+  },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "extension@alivirya.github.com"
+    }
   },
   "permissions": ["storage"]
 }
