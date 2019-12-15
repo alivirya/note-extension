@@ -140,6 +140,7 @@ class Tab extends React.Component<TabProps, {}> {
         this.props.removeTab(this.props.tabName);
     }
 
+    // TODO: Change this so that the id is a number maybe instead..? Need to format with addTab and removeTab as well
     //Make this textbox that is editable smaller and not the entire tab
     render() {
         return (

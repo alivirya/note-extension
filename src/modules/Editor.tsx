@@ -1,20 +1,30 @@
 import "codemirror/lib/codemirror.css"
-import "../themes/todo.css"
 import "../code-block/todo"
+import "../themes/phoebe.css"
 
+import $ from 'jquery';
 import CodeMirror from "codemirror"
+import Footer from './Footer'
 import React from 'react';
 
 type EditorProps = { 
     currentTab: string;
 }
 
-class Editor extends React.Component<EditorProps, {}> {
+type EditorState = {
+    theme: string;
+}
+
+class Editor extends React.Component<EditorProps, EditorState> {
     private editor!: CodeMirror.Editor;
     private name: string;
     constructor(props: EditorProps) {
         super(props);
+        this.state = {
+            theme: "phoebe",
+        };
         this.handleChange = this.handleChange.bind(this);
+        this.updateTheme =  this.updateTheme.bind(this);
         this.name = props.currentTab;
     }
 
@@ -22,7 +32,7 @@ class Editor extends React.Component<EditorProps, {}> {
         this.editor = CodeMirror.fromTextArea(document.getElementById("editor")! as HTMLTextAreaElement, {
             lineNumbers: true,
             indentUnit: 4,
-            theme: "todo",
+            theme: "phoebe",
             mode: "todo",
         });
 
@@ -38,6 +48,8 @@ class Editor extends React.Component<EditorProps, {}> {
         if (localStorage.getItem(this.name) !== null) {
             this.editor.setValue(localStorage.getItem(this.name)!);
         }
+        this.editor.setOption("theme", this.state.theme);
+        this.updateStyle();
         this.editor.refresh()
     }
 
@@ -45,23 +57,32 @@ class Editor extends React.Component<EditorProps, {}> {
         localStorage.setItem(this.name, this.editor.getValue());
     }
 
-    render() {
-        return (
-            <textarea id="editor"></textarea>
-        )
-    }
-}
-
-class Footer extends React.Component {
-    constructor(props: any) {
-        super(props);
+    updateTheme(theme: string) {
+        this.setState({
+            theme: theme
+        });
     }
 
-    render() {
-        return (
-            <div></div>
-        )
+    updateStyle() {
+        let doc = document.querySelector(`.cm-s-${this.state.theme}.CodeMirror`) as HTMLElement;
+        let color = getComputedStyle(doc).backgroundColor;
+        console.log(color);
+        let tabs = $('.tab');
+        // With each one, calculate the percentage and apply the width.
+        tabs.each(function() {
+            $(this).css('background-color', color);
+        });
+
         
+    }
+
+    render() {
+        return (
+            <div id="editorArea">
+                <textarea id="editor"></textarea>
+                <Footer updateTheme={this.updateTheme}/>
+            </div>
+        )
     }
 }
 

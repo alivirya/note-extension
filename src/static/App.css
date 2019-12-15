@@ -10,7 +10,7 @@
 
 .CodeMirror {
   text-align: left !important;
-  height: 96% !important;
+  height: 97% !important;
   font-size: 20px !important;
   font-family: "Roboto Mono" !important;
 }
@@ -35,6 +35,14 @@
   padding: 5px 10px 10px 10px;
   border-top-left-radius: 15px;
   border-top-right-radius: 15px
+}
+
+#editorArea {
+  height: 96%;
+}
+
+#footer {
+  height: 3%;
 }
 
 .tab {

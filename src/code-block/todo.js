@@ -54,7 +54,7 @@ CodeMirror.defineMode("todo", function(config, parserConfig) {
         stream.match(/`{2}/);
         return "codeState";
     }
-    // TODO: Make state work for the entire line
+    // TODO: Make state work for the entire line, make it work for when it is just one line
     if (state.codeState) {
         stream.eatWhile(/[^`]*/);
         return "code";
@@ -97,7 +97,6 @@ CodeMirror.defineMode("todo", function(config, parserConfig) {
         return "operator";
     }
 
-    // TODO: Separate hashes and the words
     if (ch === "#" && state.startOfLine) {
         var no = stream.match(/[#]*/);
         if (no.input.startsWith("#")) return "header-2";
