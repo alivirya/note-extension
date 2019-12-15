@@ -101,11 +101,6 @@ class Tab extends React.Component<TabProps, {}> {
 
     componentDidMount() {
         try {
-            let doc = document.getElementById(this.props.tabName)
-            if (doc !== null) {
-                if (this.props.tabName === this.props.currentTab) doc.style.backgroundColor = "#272822";
-                else doc.style.backgroundColor = "#3c3d37";
-            }
             let docName = document.getElementById(this.props.tabName + "Name")!
             // TODO: This needs to be extended so that the name is also updated on the event of pressing something outside of the text area
             if (docName !== null) {
@@ -121,16 +116,6 @@ class Tab extends React.Component<TabProps, {}> {
         }
     }
 
-    componentDidUpdate() {
-        try {
-            let doc = document.getElementById(this.props.tabName)!
-            if (this.props.tabName === this.props.currentTab) doc.style.backgroundColor = "#272822";
-            else doc.style.backgroundColor = "#3c3d37";
-        } catch(err) {
-            console.log(err);
-        }
-
-    }
 
     onTabClick() {
         this.props.updateCurrentTab(this.props.tabName);

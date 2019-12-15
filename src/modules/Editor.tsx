@@ -81,9 +81,10 @@ class Editor extends React.Component<EditorProps, EditorState> {
         $('#themeSelector').css("background-color", otherColors);
         
         tabs.each(function() {
-            $(this).css('background-color', color);
+            $(this).css('background-color', otherColors);
             $(this).css('color', complement);
         });
+        $(`#${this.props.currentTab}`).css("background-color", color);
 
         
     }
