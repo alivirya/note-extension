@@ -2,6 +2,8 @@ import "codemirror/lib/codemirror.css"
 import "../code-block/todo"
 import "../themes/phoebe.css"
 
+import { getLighter, invertRGB } from '../utilities/color';
+
 import $ from 'jquery';
 import CodeMirror from "codemirror"
 import Footer from './Footer'
@@ -39,6 +41,8 @@ class Editor extends React.Component<EditorProps, EditorState> {
         if (localStorage.getItem(this.name)) {
             this.editor.setValue(localStorage.getItem(this.name)!);
         }
+
+        this.updateStyle();
         this.editor.on("changes", this.handleChange)
         this.editor.refresh()
     }
@@ -66,11 +70,18 @@ class Editor extends React.Component<EditorProps, EditorState> {
     updateStyle() {
         let doc = document.querySelector(`.cm-s-${this.state.theme}.CodeMirror`) as HTMLElement;
         let color = getComputedStyle(doc).backgroundColor;
-        console.log(color);
+        let complement = invertRGB(color);
+        let otherColors = getLighter(color);
         let tabs = $('.tab');
+        let tabArea = $('#tabArea');
+        let footer = $('#footer');
+        footer.css("background-color", otherColors);
+        tabArea.css("background-color", otherColors);
+        
         // With each one, calculate the percentage and apply the width.
         tabs.each(function() {
             $(this).css('background-color', color);
+            $(this).css('color', complement);
         });
 
         
