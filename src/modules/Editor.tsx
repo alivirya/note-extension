@@ -77,7 +77,7 @@ class Editor extends React.Component<EditorProps, EditorState> {
         $('#footer').css("background-color", color);
         $('#add').css("background-color", color);
         $('#add').css("color", complement);
-        $('#themeSelector').css("color", complement);
+        $('#themeSelector').css("color", "#FFF");
         $('#themeSelector').css("background-color", otherColors);
         
         tabs.each(function() {

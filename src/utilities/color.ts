@@ -30,9 +30,17 @@ export function invertRGB(color: string) {
 export function getLighter(color: string) {
     let colors: rgb = getRGB(color);
     let lighterColors: rgb = {
-        red: colors.red + 30,
-        green: colors.green + 30, 
-        blue: colors.blue + 30
+        red: maxRGB(colors.red + 50),
+        green: maxRGB(colors.green + 50), 
+        blue: maxRGB(colors.blue + 50)
     }
     return `rgb(${lighterColors.red}, ${lighterColors.green}, ${lighterColors.blue})`;
+}
+
+function maxRGB(value: number) {
+    if (value > 255) {
+        return value - 255;
+    } else {
+        return value;
+    }
 }

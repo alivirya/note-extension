@@ -24,6 +24,35 @@ import "codemirror/theme/material-ocean.css"
 import "codemirror/theme/material-palenight.css"
 import "codemirror/theme/material.css"
 import "codemirror/theme/mbo.css"
+import "codemirror/theme/mdn-like.css"
+import "codemirror/theme/midnight.css"
+import "codemirror/theme/moxer.css"
+import "codemirror/theme/neat.css"
+import "codemirror/theme/neo.css"
+import "codemirror/theme/night.css"
+import "codemirror/theme/nord.css"
+import "codemirror/theme/oceanic-next.css"
+import "codemirror/theme/panda-syntax.css"
+import "codemirror/theme/paraiso-dark.css"
+import "codemirror/theme/paraiso-light.css"
+import "codemirror/theme/pastel-on-dark.css"
+import "codemirror/theme/railscasts.css"
+import "codemirror/theme/rubyblue.css"
+import "codemirror/theme/seti.css"
+import "codemirror/theme/shadowfox.css"
+import "codemirror/theme/solarized.css"
+import "codemirror/theme/ssms.css"
+import "codemirror/theme/the-matrix.css"
+import "codemirror/theme/tomorrow-night-bright.css"
+import "codemirror/theme/tomorrow-night-eighties.css"
+import "codemirror/theme/ttcn.css"
+import "codemirror/theme/twilight.css"
+import "codemirror/theme/vibrant-ink.css"
+import "codemirror/theme/xq-dark.css"
+import "codemirror/theme/xq-light.css"
+import "codemirror/theme/yeti.css"
+import "codemirror/theme/yonce.css"
+import "codemirror/theme/zenburn.css"
 
 import React from "react";
 
@@ -70,8 +99,12 @@ class Selection extends React.Component<SelectionProps, {}> {
     constructor(props: SelectionProps) {
         super(props);
         this.themeArray = ["phoebe", "3024-day", "3024-night", "abcdef", "ambiance", "base16-dark", "base16-light", "bespin", "blackboard", "cobalt",
-            "colorforth", "darcula", "dracula", "erlang-dark", "gruvbox-dark", "hopscotch", "icecoder", "idea", "isotope",
-            "lesser-dark", "liquibyte", "lucario", "material-darker", "material-ocean", "material-palenight", "material", "mbo.css"];
+            "colorforth", "darcula", "dracula", "erlang-dark", "gruvbox-dark", "hopscotch", "icecoder", "idea", "isotope", "lesser-dark", "liquibyte",
+            "lucario", "material-darker", "material-ocean", "material-palenight", "material", "mbo", "mdn-like", "midnight", "moxer", "neat", "neo",
+            "night", "nord", "oceanic-next", "panda-syntax", "paraiso-dark", "paraiso-light", "pastel-on-dark", "railscasts", "rubyblue", "seti",
+            "shadowfox", "solarized", "ssms", "the-matrix", "tomorrow-night-bright", "tomorrow-night-eighties", "ttcn", "twilight", "vibrant-ink",
+            "xq-dark", "xq-light", "yeti", "yonce", "zenburn"
+        ];
     }
 
     createOptions() {
