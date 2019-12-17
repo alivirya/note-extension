@@ -30,17 +30,27 @@ export function invertRGB(color: string) {
 export function getLighter(color: string) {
     let colors: rgb = getRGB(color);
     let lighterColors: rgb = {
-        red: maxRGB(colors.red + 50),
-        green: maxRGB(colors.green + 50), 
-        blue: maxRGB(colors.blue + 50)
+        red: maxRGB(colors.red + 100),
+        green: maxRGB(colors.green + 100), 
+        blue: maxRGB(colors.blue + 100)
     }
     return `rgb(${lighterColors.red}, ${lighterColors.green}, ${lighterColors.blue})`;
 }
 
 function maxRGB(value: number) {
     if (value > 255) {
-        return value - 255;
+        return 255 - (value - 255);
     } else {
         return value;
     }
+}
+
+export function getSlightlyLighter(color: string) {
+    let colors: rgb = getRGB(color);
+    let lighterColors: rgb = {
+        red: maxRGB(colors.red + 50),
+        green: maxRGB(colors.green + 50), 
+        blue: maxRGB(colors.blue + 50)
+    }
+    return `rgb(${lighterColors.red}, ${lighterColors.green}, ${lighterColors.blue})`;
 }
