@@ -70,26 +70,29 @@ class Editor extends React.Component<EditorProps, EditorState> {
     }
 
     updateStyle() {
-        console.log(`updating style with currentTab of ${this.props.currentNote.getId()}`);
-        let doc = document.querySelector(`.cm-s-${this.state.theme}.CodeMirror`) as HTMLElement;
-        let color = getComputedStyle(doc).backgroundColor;
-        let complement = invertRGB(color);
-        let slight = getSlightlyLighter(color);
-        let otherColors = getLighter(color);
-        let tabs = $('.tab');
-        $('#tabArea').css("background-color", slight);
-        $('#footer').css("background-color", color);
-        $('#add').css("background-color", color);
-        $('#add').css("color", complement);
-        $('#themeSelector').css("color", "#FFF");
-        $('#themeSelector').css("background-color", otherColors);
-        
-        tabs.each(function() {
-            $(this).css('background-color', otherColors);
-            $(this).css('color', complement);
-        });
-        $(`#${this.props.currentNote.getId()}`).css("background-color", color);
-
+        try {
+            console.log(`updating style with currentTab of ${this.props.currentNote.getId()}`);
+            let doc = document.querySelector(`.cm-s-${this.state.theme}.CodeMirror`) as HTMLElement;
+            let color = getComputedStyle(doc).backgroundColor;
+            let complement = invertRGB(color);
+            let slight = getSlightlyLighter(color);
+            let otherColors = getLighter(color);
+            let tabs = $('.tab');
+            $('#tabArea').css("background-color", slight);
+            $('#footer').css("background-color", color);
+            $('#add').css("background-color", color);
+            $('#add').css("color", complement);
+            $('#themeSelector').css("color", "#FFF");
+            $('#themeSelector').css("background-color", otherColors);
+            
+            tabs.each(function() {
+                $(this).css('background-color', otherColors);
+                $(this).css('color', complement);
+            });
+            $(`#${this.props.currentNote.getId()}`).css("background-color", color);
+        } catch (err) {
+            console.log(err);
+        }
         
     }
 
