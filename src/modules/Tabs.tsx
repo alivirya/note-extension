@@ -1,40 +1,29 @@
 import $ from 'jquery';
-import { NoteInformation } from './Main';
+import { Note } from '../objects/Note';
 import React from 'react';
 import Sortable from 'sortablejs';
-
-// Have to change colors to adjust for colours of themes
+import { compareValues } from '../utilities/Util';
 
 interface StandardTabProps {
-    currentTab: string;
-    updateTabName(oldName: string, newName: string): void;
-    updateCurrentTab(tab: string): void;
-    removeTab(tab: string): void;
+    updateTabName(id: number, tabName: string): void;
+    updateCurrentNote(id: number): void;
+    removeTab(id: number): void;
 }
 
-interface TabsProps extends StandardTabProps {
-    notes: NoteInformation[];
+interface TabsProps extends RenderTabProps {
     addTab(): void;
 }
 
 interface RenderTabProps extends StandardTabProps {
-    notes: NoteInformation[];
+    notes: Note[];
 }
 
 interface TabProps extends StandardTabProps {
-    tabName: string;
+    note: Note;
 }
-
-type TabState = {
-    notes: NoteInformation[];
-}
-
-class Tabs extends React.Component<TabsProps, TabState> {
+class Tabs extends React.Component<TabsProps, {}> {
     constructor(props: TabsProps) {
         super(props);
-        this.state = {
-            notes: props.notes,
-        };
         this.onClick = this.onClick.bind(this);
     }
 
@@ -65,7 +54,7 @@ class Tabs extends React.Component<TabsProps, TabState> {
         return (
             <div id="tabArea">
                 <RenderTabs notes={this.props.notes} updateTabName={this.props.updateTabName} removeTab={this.props.removeTab}
-                    updateCurrentTab={this.props.updateCurrentTab} currentTab={this.props.currentTab}/>
+                    updateCurrentNote={this.props.updateCurrentNote}/>
                 <div id="add" onClick={this.onClick}>+
                 </div>
             </div>
@@ -76,9 +65,10 @@ class Tabs extends React.Component<TabsProps, TabState> {
 class RenderTabs extends React.Component<RenderTabProps, {}> {
     createTabs() {
         let tabArr = [];
+        this.props.notes.sort(compareValues());
         for (let i = 0; i < this.props.notes.length; i++) {
-            tabArr[i] = <Tab tabName={this.props.notes[i].tabName} updateCurrentTab={this.props.updateCurrentTab} removeTab={this.props.removeTab}
-                updateTabName={this.props.updateTabName} currentTab={this.props.currentTab} />
+            tabArr[i] = <Tab note={this.props.notes[i]} updateCurrentNote={this.props.updateCurrentNote} removeTab={this.props.removeTab}
+                updateTabName={this.props.updateTabName}/>
         }
 
         return tabArr
@@ -101,40 +91,39 @@ class Tab extends React.Component<TabProps, {}> {
 
     componentDidMount() {
         try {
-            let docName = document.getElementById(this.props.tabName + "Name")!
+            const tabName = document.getElementById(`${this.props.note.getId()}Name`)
+            if (tabName === null) throw new Error("Unable to get tab name element");
             // TODO: This needs to be extended so that the name is also updated on the event of pressing something outside of the text area
-            if (docName !== null) {
-                docName.addEventListener("keydown", (e) => {
-                    if (e.keyCode === 13 ) {
-                        e.preventDefault();
-                        this.props.updateTabName!(this.props.tabName, docName.textContent ? docName.textContent : "");
-                    }
-                })
-            }
+            tabName.addEventListener("keydown", (e) => {
+                if (e.keyCode === 13 ) {
+                    e.preventDefault();
+                    this.props.updateTabName(this.props.note.getId(), tabName.textContent ? tabName.textContent : this.props.note.getTabName());
+                }
+            })
         } catch(err) {
             console.log(err);
         }
     }
 
 
-    onTabClick() {
-        this.props.updateCurrentTab(this.props.tabName);
+    async onTabClick() {
+        await this.props.updateCurrentNote(this.props.note.getId());
     }
     
-    onCloseClick() {
-        this.props.removeTab(this.props.tabName);
+    async onCloseClick() {
+        await this.props.removeTab(this.props.note.getId());
     }
 
     // TODO: Change this so that the id is a number maybe instead..? Need to format with addTab and removeTab as well
     //Make this textbox that is editable smaller and not the entire tab
     render() {
         return (
-            <div className="tab" id={this.props.tabName} onClick={this.onTabClick}>
-                <div className="filler"></div>
-                <div className="tabContent" id={this.props.tabName+"Name"} contentEditable="true">
-                    {this.props.tabName}
+            <div className="tab" id={`${this.props.note.getId()}`}>
+                <div className="filler" onClick={this.onTabClick}>emptyemptyemptyempty</div>
+                <div className="tabContent" id={`${this.props.note.getId()}Name`} onClick={this.onTabClick} contentEditable="true">
+                    {this.props.note.getTabName()}
                 </div>
-                <div className="filler"></div>
+                <div className="filler" onClick={this.onTabClick}>emptyemptyemptyemptyempty</div>
                 <div className="close" onClick={this.onCloseClick}>x</div>
             </div>
         )
