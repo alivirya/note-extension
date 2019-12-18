@@ -110,7 +110,7 @@ class Selection extends React.Component<SelectionProps, {}> {
     createOptions() {
         let optionsArr = [];
         for (let i = 0; i < this.themeArray.length; i++) {
-            optionsArr[i] = <option value={this.themeArray[i]}>{this.themeArray[i]}</option>
+            optionsArr[i] = <option key={this.themeArray[i]} value={this.themeArray[i]}>{this.themeArray[i]}</option>
         }
         return optionsArr;
     }

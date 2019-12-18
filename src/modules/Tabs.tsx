@@ -34,7 +34,7 @@ class Tabs extends React.Component<TabsProps, {}> {
     componentDidMount() {
         this.updateTabWidth();
         let tabArea = document.getElementById("tabArea")!;
-        Sortable.create(tabArea);
+        if (tabArea !== null) Sortable.create(tabArea);
     }
 
     componentDidUpdate() {

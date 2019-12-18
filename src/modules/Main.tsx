@@ -1,5 +1,4 @@
 import "typeface-roboto-mono"
-import "../static/App.css";
 
 import { getCurrentTab, retrieveAllNotes } from '../utilities/Database';
 
@@ -14,20 +13,23 @@ type MainState = {
     currentNote: Note;
 }
 
-export const db = new NoteTakerDatabase()
-db.notes.mapToClass(Note);
+type MainProps = {
+    db: NoteTakerDatabase;
+}
 const firstNote = new Note();
 
 /*
     THERE MUST BE A BETTER WAY TO DO THIS.
 */
-class Main extends React.Component<{}, MainState> {
-    constructor(props: any) {
+class Main extends React.Component<MainProps, MainState> {
+    private db: NoteTakerDatabase;
+    constructor(props: MainProps) {
         super(props);
         this.state = {
             notes: [],
             currentNote: firstNote,
         }
+        this.db = props.db;
         this.updateTabName = this.updateTabName.bind(this);
         this.updateCurrentNote = this.updateCurrentNote.bind(this);
         this.addTab = this.addTab.bind(this);
@@ -35,7 +37,7 @@ class Main extends React.Component<{}, MainState> {
     }
 
     componentDidMount() {
-        retrieveAllNotes(db).then(async (notes) => {
+        retrieveAllNotes(this.db).then(async (notes) => {
             let currentNote: Note;
             if (notes.length === 0) {
                 firstNote.setCurrent();
@@ -43,7 +45,7 @@ class Main extends React.Component<{}, MainState> {
                 currentNote = current;
                 notes.push(currentNote);
             } else {
-                currentNote = await getCurrentTab(db) as Note;
+                currentNote = await getCurrentTab(this.db) as Note;
             }
             
             this.setState({
@@ -57,7 +59,7 @@ class Main extends React.Component<{}, MainState> {
 
     //NOTE: Is there a way to just update one of the note?? as opposed to the entire array
     async updateTabName(id: number, tabName: string) {
-        db.notes
+        this.db.notes
             .update(id, {tabName})
             .then(() => {
                 const noteUpdate = this.state.notes.find((note) => note.getId() === id);
@@ -80,7 +82,7 @@ class Main extends React.Component<{}, MainState> {
             note = new Note();
         }
 
-        await db.notes
+        await this.db.notes
             .add(note)
             .then((id) => {
                 note.setId(id);
@@ -95,16 +97,16 @@ class Main extends React.Component<{}, MainState> {
 
     async updateCurrentNote(id: number) {
         console.log(`Updating the current tab to ${id}`);
-        let currentNote = await getCurrentTab(db);
+        let currentNote = await getCurrentTab(this.db);
         if (currentNote === undefined) currentNote = this.state.currentNote; 
 
         currentNote.removeCurrent();
-        return db.notes
+        return this.db.notes
             .update(currentNote.getId()!, {currentTab: 0})
             .then(() => {
-                return db.notes.update(id, {currentTab: 1});
+                return this.db.notes.update(id, {currentTab: 1});
             }).then(() => {
-                return db.notes.get(id);
+                return this.db.notes.get(id);
             }).then((tab) => {
                 if (tab === undefined) throw new Error("tab could not be found");
                 tab.setId((tab as any).id);
@@ -124,7 +126,7 @@ class Main extends React.Component<{}, MainState> {
 
     removeTab(id: number) {
         console.log(`Deleting tab with id ${id}`);
-        db.notes
+        this.db.notes
             .delete(id)
             .then(async () => {
                 let noteCopy = [ ...this.state.notes];
@@ -141,7 +143,7 @@ class Main extends React.Component<{}, MainState> {
                         } else {
                             tabToUpdate = this.state.notes[i-1].getId()!
                         }
-                        this.updateCurrentNote(tabToUpdate).then(async (tab) => {
+                        await this.updateCurrentNote(tabToUpdate).then(async (tab) => {
                             if (tab === undefined) throw new Error("unable to update tab while removing");
                             await this.setState({
                                 notes: noteCopy,
@@ -159,7 +161,7 @@ class Main extends React.Component<{}, MainState> {
             <div className="App">
               <Tabs notes={this.state.notes} updateCurrentNote={this.updateCurrentNote} updateTabName={this.updateTabName} removeTab={this.removeTab}
                 addTab={this.addTab}/>
-              <Editor currentNote={this.state.currentNote}/>
+              <Editor currentNote={this.state.currentNote} db={this.db}/>
             </div>
         )
     }

@@ -8,11 +8,12 @@ import $ from 'jquery';
 import CodeMirror from "codemirror"
 import Footer from './Footer'
 import { Note } from "../objects/Note"
+import { NoteTakerDatabase } from '../objects/Database';
 import React from 'react';
-import { db } from "./Main";
 
 type EditorProps = { 
     currentNote: Note;
+    db: NoteTakerDatabase;
 }
 
 type EditorState = {
@@ -37,7 +38,9 @@ class Editor extends React.Component<EditorProps, EditorState> {
     }
 
     componentDidMount() {
-        this.editor = CodeMirror.fromTextArea(document.getElementById("editor")! as HTMLTextAreaElement, {
+        let editor = document.getElementById("editor");
+        if (editor === null) return;
+        this.editor = CodeMirror.fromTextArea(editor as HTMLTextAreaElement, {
             lineNumbers: true,
             indentUnit: 4,
             mode: "todo",
@@ -58,7 +61,7 @@ class Editor extends React.Component<EditorProps, EditorState> {
     }
 
     handleChange() {
-        db.notes
+        this.props.db.notes
             .update(this.currentNote.getId(), {editorData: this.editor.getValue()})
     }
 
