@@ -1,15 +1,4 @@
-import { Note } from '../objects/Note';
 import { NoteTakerDatabase } from './../objects/Database';
-
-export interface INote {
-    tabName: string;
-    editorData: string;
-    currentTab: number;
-}
-
-export async function removeNote(db: NoteTakerDatabase, note: Note) {
-    return db.notes.where("currentTab").equals(note.currentTab).delete();
-}
 
 export function retrieveAllNotes(db: NoteTakerDatabase) {
     return db.notes.toArray().then((notes) => {

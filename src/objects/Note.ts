@@ -1,16 +1,15 @@
-import { INote } from '../utilities/Database';
-
-export class Note implements INote {
+export class Note {
     tabName: string;
     editorData: string;
+    noteId: number;
     currentTab: number;
-    noteId?: number;
     
     constructor(tabName?: string, editorData?: string, id?: number) {
         this.tabName = tabName ? tabName : "untitled";
         this.editorData = editorData ? editorData : "";
         this.currentTab = 0;
         if (id) this.noteId = id;
+        else this.noteId = 0;
     }
 
     setId(id: number) {
@@ -38,6 +37,7 @@ export class Note implements INote {
     }
 
     getId() {
+        if (this.noteId === 0) throw new Error("Id for note has not been set by database");
         return this.noteId;
     }
 

@@ -6,7 +6,7 @@ import { compareValues } from '../utilities/Util';
 
 interface StandardTabProps {
     updateTabName(id: number, tabName: string): void;
-    updateCurrentTab(id: number): void;
+    updateCurrentNote(id: number): void;
     removeTab(id: number): void;
 }
 
@@ -15,23 +15,15 @@ interface TabsProps extends RenderTabProps {
 }
 
 interface RenderTabProps extends StandardTabProps {
-    note: Note[];
+    notes: Note[];
 }
 
 interface TabProps extends StandardTabProps {
     note: Note;
 }
-
-type TabState = {
-    note: Note[];
-}
-
-class Tabs extends React.Component<TabsProps, TabState> {
+class Tabs extends React.Component<TabsProps, {}> {
     constructor(props: TabsProps) {
         super(props);
-        this.state = {
-            note: props.note,
-        };
         this.onClick = this.onClick.bind(this);
     }
 
@@ -61,8 +53,8 @@ class Tabs extends React.Component<TabsProps, TabState> {
     render() {
         return (
             <div id="tabArea">
-                <RenderTabs note={this.props.note} updateTabName={this.props.updateTabName} removeTab={this.props.removeTab}
-                    updateCurrentTab={this.props.updateCurrentTab}/>
+                <RenderTabs notes={this.props.notes} updateTabName={this.props.updateTabName} removeTab={this.props.removeTab}
+                    updateCurrentNote={this.props.updateCurrentNote}/>
                 <div id="add" onClick={this.onClick}>+
                 </div>
             </div>
@@ -73,9 +65,9 @@ class Tabs extends React.Component<TabsProps, TabState> {
 class RenderTabs extends React.Component<RenderTabProps, {}> {
     createTabs() {
         let tabArr = [];
-        this.props.note.sort(compareValues());
-        for (let i = 0; i < this.props.note.length; i++) {
-            tabArr[i] = <Tab note={this.props.note[i]} updateCurrentTab={this.props.updateCurrentTab} removeTab={this.props.removeTab}
+        this.props.notes.sort(compareValues());
+        for (let i = 0; i < this.props.notes.length; i++) {
+            tabArr[i] = <Tab note={this.props.notes[i]} updateCurrentNote={this.props.updateCurrentNote} removeTab={this.props.removeTab}
                 updateTabName={this.props.updateTabName}/>
         }
 
@@ -99,16 +91,15 @@ class Tab extends React.Component<TabProps, {}> {
 
     componentDidMount() {
         try {
-            let docName = document.getElementById(this.props.note.getId()! + "Name")!
+            const tabName = document.getElementById(`${this.props.note.getId()}Name`)
+            if (tabName === null) throw new Error("Unable to get tab name element");
             // TODO: This needs to be extended so that the name is also updated on the event of pressing something outside of the text area
-            if (docName !== null) {
-                docName.addEventListener("keydown", (e) => {
-                    if (e.keyCode === 13 ) {
-                        e.preventDefault();
-                        this.props.updateTabName(this.props.note.getId()!, docName.textContent ? docName.textContent : this.props.note.getTabName());
-                    }
-                })
-            }
+            tabName.addEventListener("keydown", (e) => {
+                if (e.keyCode === 13 ) {
+                    e.preventDefault();
+                    this.props.updateTabName(this.props.note.getId(), tabName.textContent ? tabName.textContent : this.props.note.getTabName());
+                }
+            })
         } catch(err) {
             console.log(err);
         }
@@ -116,20 +107,20 @@ class Tab extends React.Component<TabProps, {}> {
 
 
     async onTabClick() {
-        await this.props.updateCurrentTab(this.props.note.getId()!);
+        await this.props.updateCurrentNote(this.props.note.getId());
     }
     
     async onCloseClick() {
-        await this.props.removeTab(this.props.note.getId()!);
+        await this.props.removeTab(this.props.note.getId());
     }
 
     // TODO: Change this so that the id is a number maybe instead..? Need to format with addTab and removeTab as well
     //Make this textbox that is editable smaller and not the entire tab
     render() {
         return (
-            <div className="tab" id={`${this.props.note.getId()!}`}>
+            <div className="tab" id={`${this.props.note.getId()}`}>
                 <div className="filler" onClick={this.onTabClick}>emptyemptyemptyempty</div>
-                <div className="tabContent" id={this.props.note.getId()+"Name"} onClick={this.onTabClick} contentEditable="true">
+                <div className="tabContent" id={`${this.props.note.getId()}Name`} onClick={this.onTabClick} contentEditable="true">
                     {this.props.note.getTabName()}
                 </div>
                 <div className="filler" onClick={this.onTabClick}>emptyemptyemptyemptyempty</div>

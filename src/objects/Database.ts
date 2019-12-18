@@ -1,12 +1,6 @@
 import Dexie from 'dexie';
 import { Note } from './Note';
 
-export interface INote {
-    tabName: string;
-    editorData: string;
-    currentTab: number;
-}
-
 export class NoteTakerDatabase extends Dexie {
     notes: Dexie.Table<Note, number>;
 

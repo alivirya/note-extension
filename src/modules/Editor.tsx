@@ -19,14 +19,17 @@ type EditorState = {
     theme: string;
 }
 
+let theme: string;
+if (localStorage.getItem("theme") === null)  localStorage.setItem("theme", "phoebe");
+theme = localStorage.getItem("theme") !== null ? localStorage.getItem("theme")! : "phoebe";
+
 class Editor extends React.Component<EditorProps, EditorState> {
     private editor!: CodeMirror.Editor;
     private currentNote: Note;
     constructor(props: EditorProps) {
         super(props);
-        // Keep theme in local storage so that it keeps its state
         this.state = {
-            theme: "phoebe",
+            theme,
         };
         this.handleChange = this.handleChange.bind(this);
         this.updateTheme =  this.updateTheme.bind(this);
@@ -56,11 +59,11 @@ class Editor extends React.Component<EditorProps, EditorState> {
 
     handleChange() {
         db.notes
-            .update(this.currentNote.getId()!, {editorData: this.editor.getValue()})
-        // Need to update current note too?
+            .update(this.currentNote.getId(), {editorData: this.editor.getValue()})
     }
 
     updateTheme(theme: string) {
+        localStorage.setItem("theme", theme);
         this.setState({
             theme: theme
         });
@@ -85,7 +88,7 @@ class Editor extends React.Component<EditorProps, EditorState> {
             $(this).css('background-color', otherColors);
             $(this).css('color', complement);
         });
-        $(`#${this.props.currentNote.getId()!}`).css("background-color", color);
+        $(`#${this.props.currentNote.getId()}`).css("background-color", color);
 
         
     }

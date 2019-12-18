@@ -29,12 +29,12 @@ class Main extends React.Component<{}, MainState> {
             currentNote: firstNote,
         }
         this.updateTabName = this.updateTabName.bind(this);
-        this.updateCurrentTab = this.updateCurrentTab.bind(this);
+        this.updateCurrentNote = this.updateCurrentNote.bind(this);
         this.addTab = this.addTab.bind(this);
         this.removeTab = this.removeTab.bind(this);
     }
 
-    async componentDidMount() {
+    componentDidMount() {
         retrieveAllNotes(db).then(async (notes) => {
             let currentNote: Note;
             if (notes.length === 0) {
@@ -72,10 +72,10 @@ class Main extends React.Component<{}, MainState> {
             });
     }
 
-    async addTab(notes?: Note) {
+    async addTab(newNote?: Note) {
         let note: Note;
-        if (notes) {
-            note = notes;
+        if (newNote) {
+            note = newNote;
         } else {
             note = new Note();
         }
@@ -93,7 +93,7 @@ class Main extends React.Component<{}, MainState> {
         return note;
     }
 
-    async updateCurrentTab(id: number) {
+    async updateCurrentNote(id: number) {
         console.log(`Updating the current tab to ${id}`);
         let currentNote = await getCurrentTab(db);
         if (currentNote === undefined) currentNote = this.state.currentNote; 
@@ -141,7 +141,7 @@ class Main extends React.Component<{}, MainState> {
                         } else {
                             tabToUpdate = this.state.notes[i-1].getId()!
                         }
-                        this.updateCurrentTab(tabToUpdate).then(async (tab) => {
+                        this.updateCurrentNote(tabToUpdate).then(async (tab) => {
                             if (tab === undefined) throw new Error("unable to update tab while removing");
                             await this.setState({
                                 notes: noteCopy,
@@ -157,7 +157,7 @@ class Main extends React.Component<{}, MainState> {
     render() {
         return (
             <div className="App">
-              <Tabs note={this.state.notes} updateCurrentTab={this.updateCurrentTab} updateTabName={this.updateTabName} removeTab={this.removeTab}
+              <Tabs notes={this.state.notes} updateCurrentNote={this.updateCurrentNote} updateTabName={this.updateTabName} removeTab={this.removeTab}
                 addTab={this.addTab}/>
               <Editor currentNote={this.state.currentNote}/>
             </div>
