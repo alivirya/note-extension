@@ -4,17 +4,17 @@ export class Note implements INote {
     tabName: string;
     editorData: string;
     currentTab: number;
-    id?: number;
+    noteId?: number;
     
     constructor(tabName?: string, editorData?: string, id?: number) {
         this.tabName = tabName ? tabName : "untitled";
         this.editorData = editorData ? editorData : "";
         this.currentTab = 0;
-        if (id) this.id = id;
+        if (id) this.noteId = id;
     }
 
     setId(id: number) {
-        this.id = id;
+        this.noteId = id;
     }
 
     setTabName(tabName: string) {
@@ -38,7 +38,7 @@ export class Note implements INote {
     }
 
     getId() {
-        return this.id;
+        return this.noteId;
     }
 
     removeCurrent() {

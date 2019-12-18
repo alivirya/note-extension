@@ -39,8 +39,9 @@ class Main extends React.Component<{}, MainState> {
             let currentNote: Note;
             if (notes.length === 0) {
                 firstNote.setCurrent();
-                await this.addTab(firstNote);
-                currentNote = firstNote;
+                let current = await this.addTab(firstNote);
+                currentNote = current;
+                notes.push(currentNote);
             } else {
                 currentNote = await getCurrentTab(db) as Note;
             }
@@ -85,33 +86,44 @@ class Main extends React.Component<{}, MainState> {
                 note.setId(id);
                 const noteCopy = [...this.state.notes, note];
                 this.setState({notes: noteCopy});
-            }).then(() => {
-                return note;
             }).catch((err) => {
                 console.log(err);
             });
+        console.log(`Added new tab with id ${note.getId()}`)
         return note;
     }
 
     async updateCurrentTab(id: number) {
-        let currentNoteId = await getCurrentTab(db);
-        if (currentNoteId === undefined) throw new Error("Current tab is undefined");
-        currentNoteId.removeCurrent();
-        db.notes
-            .update(currentNoteId.getId()!, {currentNoteId: 0})
+        console.log(`Updating the current tab to ${id}`);
+        let currentNote = await getCurrentTab(db);
+        if (currentNote === undefined) currentNote = this.state.currentNote; 
+
+        currentNote.removeCurrent();
+        return db.notes
+            .update(currentNote.getId()!, {currentTab: 0})
             .then(() => {
-                return db.notes.update(id, {currentNoteId: 1});
+                return db.notes.update(id, {currentTab: 1});
             }).then(() => {
                 return db.notes.get(id);
             }).then((tab) => {
                 if (tab === undefined) throw new Error("tab could not be found");
+                tab.setId((tab as any).id);
+                tab.setCurrent();
+                const noteCopy = [...this.state.notes.filter((note) => note.getId() !== id),
+                    tab
+                ]
                 this.setState({
-                    currentNote: tab
+                    currentNote: tab,
+                    notes: noteCopy
                 });
+                return tab;
+            }).catch((err) => {
+                console.log(err);
             });
     }
 
     removeTab(id: number) {
+        console.log(`Deleting tab with id ${id}`);
         db.notes
             .delete(id)
             .then(async () => {
@@ -119,18 +131,23 @@ class Main extends React.Component<{}, MainState> {
                 for (let i = 0; i < this.state.notes.length; i++) {
                     if (this.state.notes[i].getId() === id) {
                         noteCopy.splice(i, 1);
+                        let tabToUpdate : number;
                         if (i === 0 && this.state.notes.length !== 1) {
-                            this.updateCurrentTab(this.state.notes[i].getId()!);
+                            tabToUpdate = noteCopy[i].getId()!
                         } else if (i === 0) {
                             let tab = await this.addTab();
-                            this.updateCurrentTab(tab.getId()!);
+                            noteCopy.push(tab);
+                            tabToUpdate = tab.getId()!;
                         } else {
-                            this.updateCurrentTab(this.state.notes[i-1].getId()!);
+                            tabToUpdate = this.state.notes[i-1].getId()!
                         }
-                        this.setState({
-                            notes: noteCopy,
-                        });
-                        return;
+                        this.updateCurrentTab(tabToUpdate).then(async (tab) => {
+                            if (tab === undefined) throw new Error("unable to update tab while removing");
+                            await this.setState({
+                                notes: noteCopy,
+                                currentNote: tab
+                            });
+                        })
                     }
                 }
     

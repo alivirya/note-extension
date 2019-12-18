@@ -2,6 +2,7 @@ import $ from 'jquery';
 import { Note } from '../objects/Note';
 import React from 'react';
 import Sortable from 'sortablejs';
+import { compareValues } from '../utilities/Util';
 
 interface StandardTabProps {
     updateTabName(id: number, tabName: string): void;
@@ -72,6 +73,7 @@ class Tabs extends React.Component<TabsProps, TabState> {
 class RenderTabs extends React.Component<RenderTabProps, {}> {
     createTabs() {
         let tabArr = [];
+        this.props.note.sort(compareValues());
         for (let i = 0; i < this.props.note.length; i++) {
             tabArr[i] = <Tab note={this.props.note[i]} updateCurrentTab={this.props.updateCurrentTab} removeTab={this.props.removeTab}
                 updateTabName={this.props.updateTabName}/>
@@ -113,24 +115,24 @@ class Tab extends React.Component<TabProps, {}> {
     }
 
 
-    onTabClick() {
-        this.props.updateCurrentTab(this.props.note.getId()!);
+    async onTabClick() {
+        await this.props.updateCurrentTab(this.props.note.getId()!);
     }
     
-    onCloseClick() {
-        this.props.removeTab(this.props.note.getId()!);
+    async onCloseClick() {
+        await this.props.removeTab(this.props.note.getId()!);
     }
 
     // TODO: Change this so that the id is a number maybe instead..? Need to format with addTab and removeTab as well
     //Make this textbox that is editable smaller and not the entire tab
     render() {
         return (
-            <div className="tab" id={`${this.props.note.getId()!}`} onClick={this.onTabClick}>
-                <div className="filler"></div>
-                <div className="tabContent" id={this.props.note.getId()+"Name"} contentEditable="true">
+            <div className="tab" id={`${this.props.note.getId()!}`}>
+                <div className="filler" onClick={this.onTabClick}>emptyemptyemptyempty</div>
+                <div className="tabContent" id={this.props.note.getId()+"Name"} onClick={this.onTabClick} contentEditable="true">
                     {this.props.note.getTabName()}
                 </div>
-                <div className="filler"></div>
+                <div className="filler" onClick={this.onTabClick}>emptyemptyemptyemptyempty</div>
                 <div className="close" onClick={this.onCloseClick}>x</div>
             </div>
         )

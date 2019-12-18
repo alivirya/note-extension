@@ -67,6 +67,7 @@ class Editor extends React.Component<EditorProps, EditorState> {
     }
 
     updateStyle() {
+        console.log(`updating style with currentTab of ${this.props.currentNote.getId()}`);
         let doc = document.querySelector(`.cm-s-${this.state.theme}.CodeMirror`) as HTMLElement;
         let color = getComputedStyle(doc).backgroundColor;
         let complement = invertRGB(color);

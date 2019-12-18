@@ -12,25 +12,20 @@ export async function removeNote(db: NoteTakerDatabase, note: Note) {
 }
 
 export function retrieveAllNotes(db: NoteTakerDatabase) {
-    return db.notes.toArray();
+    return db.notes.toArray().then((notes) => {
+        notes.forEach((note: any) => note.setId(note.id));
+        return notes;
+    });
+    
 }
 
 export function getCurrentTab(db: NoteTakerDatabase) {
     return db.notes.where("currentTab").equals(1).first(note => {
+        if (note === undefined) return undefined;
+        note.setId((note as any).id);
         return note
     }).catch((err) => {
         throw new Error(err);
-    });
-}
-
-export async function updateCurrentTab(db: NoteTakerDatabase, note: Note) {
-    await getCurrentTab(db).then(async (tab: Note | undefined) => {
-        if (tab === undefined) throw new Error("No current tab");
-        return tab.removeCurrent();
-    }).then(() => {
-        return note.setCurrent();
-    }).catch((err) => {
-        throw new Error(`Error getting current tab ${err}`);
     });
 }
 //update databse and then update current tab through database?!
