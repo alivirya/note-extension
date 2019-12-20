@@ -16,7 +16,7 @@ The server should now be running in localhost:3000
 ## Installing as an extension
 This extension is unsigned and so install at your own risk!
 In the case that you would like to use this application as an extension follow the steps below:
-Only been tested in firefox as that is what I use
+These instructions are only for firefox as that is my browser of choice!
 
 * Run `npm i` and `npm run build`
 * Go to about:addons
@@ -29,7 +29,10 @@ Only been tested in firefox as that is what I use
 ### As a permanent add-on
 * Install [web-ext](https://github.com/mozilla/web-ext) by running `npm install -g web-ext` unless you would like to install it exclusively for your project, in which case run `npm install --save-dev web-ext`
 * Go to the build folder, and run `web-ext build`
+* Go to about:config and set xpinstall.signatures.required to false (again, do at your own discretion)
 * Choose `install Add-On from file` and choose the file `build/web-ext-artifacts/notetaker_tab-1.0.0.zip`
+* The notetaker extension will be called "Notetaker tab", in order to make sure that it stays in your browser go to options, and click "manage"
+* Turn off automatic updates
 
 The notetaker extension should now be installed and be able to used from a new tab :-)  
 
