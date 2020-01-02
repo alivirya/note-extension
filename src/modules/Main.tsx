@@ -24,6 +24,7 @@ const firstNote = new Note();
 class Main extends React.Component<MainProps, MainState> {
     private db: NoteTakerDatabase;
     private created: boolean;
+    private deleted: boolean;
     constructor(props: MainProps) {
         super(props);
         this.state = {
@@ -36,6 +37,7 @@ class Main extends React.Component<MainProps, MainState> {
         this.addTab = this.addTab.bind(this);
         this.removeTab = this.removeTab.bind(this);
         this.created = true;
+        this.deleted = true;
     }
 
     componentDidMount() {
@@ -169,6 +171,13 @@ class Main extends React.Component<MainProps, MainState> {
                 this.created = false;
                 await this.addTab();
                 this.created = true;
+            }
+        });
+        page?.addEventListener("keydown", async (e) => {
+            if (e.keyCode === 87 && e.ctrlKey && this.deleted === true) {
+                this.deleted = false;
+                await this.removeTab(this.state.currentNote.getId());
+                this.deleted = true;
             }
         });
     }
