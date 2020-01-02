@@ -23,6 +23,7 @@ const firstNote = new Note();
 */
 class Main extends React.Component<MainProps, MainState> {
     private db: NoteTakerDatabase;
+    private created: boolean;
     constructor(props: MainProps) {
         super(props);
         this.state = {
@@ -34,6 +35,7 @@ class Main extends React.Component<MainProps, MainState> {
         this.updateCurrentNote = this.updateCurrentNote.bind(this);
         this.addTab = this.addTab.bind(this);
         this.removeTab = this.removeTab.bind(this);
+        this.created = true;
     }
 
     componentDidMount() {
@@ -55,6 +57,10 @@ class Main extends React.Component<MainProps, MainState> {
         }).catch((err) => {
             console.log(err);
         });
+    }
+
+    componentDidUpdate() {
+        this.keyboardShortcuts();
     }
 
     //NOTE: Is there a way to just update one of the note?? as opposed to the entire array
@@ -156,9 +162,20 @@ class Main extends React.Component<MainProps, MainState> {
             })
     }
 
+    keyboardShortcuts() {
+        let page = document.getElementById("app");
+        page?.addEventListener("keydown", async (e) => {
+            if (e.keyCode === 84 && e.ctrlKey && this.created === true) {
+                this.created = false;
+                await this.addTab();
+                this.created = true;
+            }
+        });
+    }
+
     render() {
         return (
-            <div className="App">
+            <div className="App" id="app">
               <Tabs notes={this.state.notes} updateCurrentNote={this.updateCurrentNote} updateTabName={this.updateTabName} removeTab={this.removeTab}
                 addTab={this.addTab}/>
               <Editor currentNote={this.state.currentNote} db={this.db}/>
