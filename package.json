@@ -10,7 +10,7 @@
     "@types/react-dom": "16.9.4",
     "@types/sortablejs": "^1.10.0",
     "codemirror": "^5.49.2",
-    "dexie": "^2.0.4",
+    "dexie": "^3.2.2",
     "fake-indexeddb": "^3.0.0",
     "fsevents": "^2.1.2",
     "jquery": "^3.4.1",
